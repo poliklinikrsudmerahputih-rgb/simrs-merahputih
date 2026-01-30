@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EEG Monitoring - Daniel Ari Kristianto</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <style>
+    body { background-color: #fceef5; font-size: 11px; font-family: 'Segoe UI', sans-serif; }
+    .header-app { background: white; padding: 10px; border-bottom: 5px solid #d63384; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .table-responsive { height: 500px; overflow-y: auto; background: white; border-radius: 8px; border: 1px solid #f8bbd0; }
+    th { position: sticky; top: 0; background: #d63384 !important; color: white; z-index: 10; text-align: center; border: 1px solid #dee2e6; padding: 10px !important; }
+    td { vertical-align: middle !important; border: 1px solid #f8bbd0; padding: 6px !important; white-space: nowrap; }
+    
+    .status-select { font-weight: bold; border-radius: 4px; padding: 2px; width: 100%; border: 1px solid #ddd; cursor: pointer; }
+    .bg-SUDAH { background-color: #d4edda !important; color: #155724; }
+    .bg-BELUM { background-color: #fff3cd !important; color: #856404; }
+    .bg-TUNDA { background-color: #f8d7da !important; color: #721c24; }
+
+    .btn-pink { background-color: #d63384; color: white; font-weight: bold; }
+    .btn-pink:hover { background-color: #b02a6a; color: white; }
+    .loading { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center; font-weight:bold; color:#d63384; }
+
+    @media print {
+        @page { size: landscape; margin: 1cm; }
+        .no-print, .btn, footer, .header-app, .col-lg-3, .filter-section { display: none !important; }
+        #printHeader { display: block !important; text-align: center; margin-bottom: 20px; }
+        .col-lg-9 { width: 100% !important; max-width: 100% !important; padding: 0 !important; }
+        .table-responsive { overflow: visible !important; height: auto !important; border: none !important; }
+        table { font-size: 9px; width: 100% !important; border: 1px solid #000 !important; border-collapse: collapse; }
+        th { background-color: #f2f2f2 !important; color: #000 !important; border: 1px solid #000 !important; -webkit-print-color-adjust: exact; }
+        td { border: 1px solid #000 !important; color: #000 !important; }
+        .status-select { border: none !important; appearance: none; -webkit-appearance: none; background: transparent !important; font-weight: bold; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="printHeader" style="display: none; text-align: center; margin-bottom: 20px;">
+  <h2 style="color: #d63384; font-weight: bold; text-decoration: underline;">DAFTAR PASIEN TINDAKAN EEG</h2>
+  <p>RSUD MERAH PUTIH - TAHUN 2026</p>
+  <hr style="border: 1px solid #000;">
+</div>
+
+<div id="loader" class="loading">MEMPROSES DATA...</div>
+
+<div class="header-app d-flex align-items-center mb-4 no-print">
+  <div class="container-fluid d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" style="height: 45px;" class="mr-3">
+      <div>
+        <h5 class="mb-0 font-weight-bold" style="color:#d63384">DAFTAR PASIEN TINDAKAN EEG</h5>
+        <small class="text-muted">Developed by: <strong>Daniel Ari Kristianto</strong></small>
+      </div>
+    </div>
+    <button onclick="window.location.href='index.html'" class="btn btn-outline-dark btn-sm">
+  <i class="fas fa-home"></i>🏠 Kembali</button>
+  </div>
+</div>
+
+<div class="container-fluid mt-3">
+  <div class="row">
+    
+    <div class="col-lg-3 no-print mb-4">
+      <div class="card p-3 border-top border-pink shadow-sm">
+        <h6 id="formTitle" class="font-weight-bold text-center mb-3" style="color:#d63384">Registrasi Pasien</h6>
+        <form id="fEeg">
+          <input type="hidden" id="editRowId">
+          
+          <label class="small mb-0 font-weight-bold">Tgl Periksa</label>
+          <input type="date" id="tanggal" class="form-control form-control-sm mb-2" required>
+          
+          <input type="text" id="nama" class="form-control form-control-sm mb-2" placeholder="Nama Pasien" required>
+          <input type="text" id="norm" class="form-control form-control-sm mb-2" placeholder="No RM" required>
+          <input type="text" id="usia" class="form-control form-control-sm mb-2" placeholder="Usia">
+          <input type="text" id="diagnosa" class="form-control form-control-sm mb-2" placeholder="Diagnosa">
+          
+          <label class="small mb-0 font-weight-bold">Pembiayaan</label>
+          <select id="pembiayaan" class="form-control form-control-sm mb-2">
+            <option value="BPJS">BPJS</option>
+            <option value="UMUM">UMUM</option>
+            <option value="ASURANSI">ASURANSI</option>
+            <option value="JASA RAHARJA">JASA RAHARJA</option>
+          </select>
+
+          <label class="small mb-0 font-weight-bold">Rencana EEG</label>
+          <input type="date" id="tglRencana" class="form-control form-control-sm mb-2" required>
+          
+          <label class="small mb-0 font-weight-bold">Status</label>
+          <select id="tindakan" class="form-control form-control-sm mb-2 font-weight-bold">
+            <option value="BELUM">BELUM</option>
+            <option value="SUDAH">SUDAH</option>
+            <option value="TUNDA">TUNDA</option>
+          </select>
+          
+          <select id="dokter" class="form-control form-control-sm mb-2">
+            <option value="">-- Pilih Dokter --</option>
+            <option value="dr.Resa">dr.Resa</option>
+            <option value="dr.Arta">dr.Arta</option>
+            <option value="dr.Soleh">dr.Soleh</option>
+            <option value="dr.Mutiah">dr.Mutiah</option>
+            <option value="dr.Juli">dr.Juli</option>
+          </select>
+          
+          <textarea id="catatan" class="form-control form-control-sm mb-2" placeholder="Catatan Tambahan..."></textarea>
+          <input type="number" id="noWa" class="form-control form-control-sm mb-3" placeholder="No WA (628...)">
+          
+          <button type="button" id="btnSimpan" class="btn btn-pink btn-block" onclick="simpan()">SIMPAN DATA</button>
+          <button type="button" id="btnBatal" class="btn btn-secondary btn-block btn-sm mt-2" style="display:none;" onclick="resetForm()">BATAL</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-9 mb-4">
+      <div class="card p-3 shadow-sm">
+        
+        <div class="no-print mb-3 row filter-section">
+          <div class="col-md-3">
+            <label class="small font-weight-bold">Cari Nama/RM:</label>
+            <input type="text" id="cari" class="form-control form-control-sm" placeholder="Ketik..." onkeyup="filterData()">
+          </div>
+          <div class="col-md-2">
+            <label class="small font-weight-bold">Status:</label>
+            <select id="filterStatus" class="form-control form-control-sm" onchange="filterData()">
+              <option value="SEMUA">-- SEMUA --</option>
+              <option value="SUDAH">SUDAH</option>
+              <option value="BELUM">BELUM</option>
+              <option value="TUNDA">TUNDA</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="small font-weight-bold">Dari Tanggal:</label>
+            <input type="date" id="tglDari" class="form-control form-control-sm" onchange="filterData()">
+          </div>
+          <div class="col-md-2">
+            <label class="small font-weight-bold">Sampai Tanggal:</label>
+            <input type="date" id="tglSampai" class="form-control form-control-sm" onchange="filterData()">
+          </div>
+          <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-dark btn-sm btn-block font-weight-bold" onclick="window.print()">🖨️ CETAK LAPORAN</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table id="myTable" class="table table-sm table-hover">
+            <thead class="bg-dark text-white">
+              <tr>
+                <th>NO</th>
+                <th>TGL PERIKSA</th>
+                <th>NAMA PASIEN</th>
+                <th>RM</th>
+                <th>USIA</th>
+                <th>DIAGNOSA</th>
+                <th>PEMBIAYAAN</th>
+                <th>RENCANA EEG</th>
+                <th>STATUS</th>
+                <th>DOKTER</th>
+                <th>CATATAN</th>
+                <th>WA</th>
+                <th class="no-print">AKSI</th>
+              </tr>
+            </thead>
+            <tbody id="bTab"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<footer class="no-print mt-5 pb-4 text-center">
+  <hr style="width: 50%; border-top: 1px solid #d63384;">
+  <p class="font-weight-bold mb-0" style="color: #d63384;">Designed & Maintained by Daniel Ari Kristianto</p>
+  <small class="text-muted">Sistem Monitoring Poliklinik RSUD Merah Putih &copy; 2026</small>
+</footer>
+
+<script>
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzKKgIVIqd7YJdiOUXxe5RtZF17wenMKybcXH0lBIAGDr5Z4J8k2IrLIbu1-BSHTIhg/exec"; 
+  let database = [];
+
+  window.onload = muat;
+  function setLoad(v) { document.getElementById('loader').style.display = v ? 'flex' : 'none'; }
+
+  function muat() {
+    setLoad(true);
+    fetch(scriptURL).then(r => r.json()).then(data => {
+      database = data;
+      renderTable(data);
+      setLoad(false);
+    });
+  }
+
+  function renderTable(data) {
+    let b = document.getElementById('bTab');
+    b.innerHTML = "";
+    if(data.length <= 1) return;
+    for(let i=1; i<data.length; i++){
+      let d = data[i];
+      let rowHtml = `
+        <td class="text-center">${d[0]}</td>
+        <td>${d[1]}</td>
+        <td class="font-weight-bold text-uppercase">${d[2]}</td>
+        <td>${d[3]}</td>
+        <td class="text-center">${d[4]}</td>
+        <td>${d[5]}</td>
+        <td>${d[6]}</td>
+        <td>${d[7]}</td>
+        <td>
+          <select onchange="updStatus(${i}, this.value)" class="status-select bg-${d[8]}">
+            <option value="BELUM" ${d[8]=='BELUM'?'selected':''}>BELUM</option>
+            <option value="SUDAH" ${d[8]=='SUDAH'?'selected':''}>SUDAH</option>
+            <option value="TUNDA" ${d[8]=='TUNDA'?'selected':''}>TUNDA</option>
+          </select>
+        </td>
+        <td>${d[9]}</td>
+        <td>${d[10]}</td>
+        <td>${d[11]}</td>
+        <td class="no-print text-center">
+          <span style="cursor:pointer" onclick="editBaris(${i})">📝</span>
+          <span style="cursor:pointer" class="text-danger" onclick="hapus(${i})">🗑️</span>
+        </td>
+      `;
+      b.innerHTML += `<tr>${rowHtml}</tr>`;
+    }
+  }
+
+  function filterData() {
+    let dari = document.getElementById('tglDari').value;
+    let sampai = document.getElementById('tglSampai').value;
+    let statusKunci = document.getElementById('filterStatus').value;
+    let kataKunci = document.getElementById('cari').value.toUpperCase();
+    let rows = document.getElementById('bTab').getElementsByTagName('tr');
+    let nomorBaru = 1; 
+
+    for (let i = 0; i < rows.length; i++) {
+      let tglBaris = (database[i+1] && database[i+1][1]) ? database[i+1][1] : ""; 
+      let selectEl = rows[i].cells[8].getElementsByTagName('select')[0];
+      let statusBaris = selectEl ? selectEl.value : "";
+      let teksBaris = rows[i].innerText.toUpperCase();
+      
+      let matchTgl = ( (!dari || tglBaris >= dari) && (!sampai || tglBaris <= sampai) );
+      let matchStatus = (statusKunci === "SEMUA" || statusBaris === statusKunci);
+      let matchCari = teksBaris.indexOf(kataKunci) > -1;
+      
+      if (matchTgl && matchStatus && matchCari) {
+        rows[i].style.display = ""; 
+        rows[i].cells[0].innerText = nomorBaru++; 
+      } else {
+        rows[i].style.display = "none";
+      }
+    }
+  }
+
+  function simpan() {
+    let rowId = document.getElementById('editRowId').value;
+    let payload = {
+      action: rowId === "" ? "TAMBAH" : "UPDATE_FULL", row: rowId,
+      tanggal: document.getElementById('tanggal').value, nama: document.getElementById('nama').value,
+      norm: document.getElementById('norm').value, usia: document.getElementById('usia').value,
+      diagnosa: document.getElementById('diagnosa').value, pembiayaan: document.getElementById('pembiayaan').value,
+      tglRencana: document.getElementById('tglRencana').value, tindakan: document.getElementById('tindakan').value,
+      dokter: document.getElementById('dokter').value, catatan: document.getElementById('catatan').value,
+      noWa: document.getElementById('noWa').value
+    };
+    if(!payload.tanggal || !payload.nama) return alert("Lengkapi data minimal Tanggal dan Nama!");
+    setLoad(true);
+    fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) }).then(() => { resetForm(); muat(); });
+  }
+
+  function editBaris(idx) {
+    let d = database[idx];
+    document.getElementById('editRowId').value = idx;
+    document.getElementById('formTitle').innerText = "Mode Edit Data";
+    document.getElementById('tanggal').value = d[1];
+    document.getElementById('nama').value = d[2];
+    document.getElementById('norm').value = d[3];
+    document.getElementById('usia').value = d[4];
+    document.getElementById('diagnosa').value = d[5];
+    document.getElementById('pembiayaan').value = d[6];
+    document.getElementById('tglRencana').value = d[7];
+    document.getElementById('tindakan').value = d[8];
+    document.getElementById('dokter').value = d[9];
+    document.getElementById('catatan').value = d[10];
+    document.getElementById('noWa').value = d[11];
+    document.getElementById('btnSimpan').innerText = "UPDATE DATA";
+    document.getElementById('btnBatal').style.display = "block";
+    window.scrollTo(0,0);
+  }
+
+  function updStatus(r, v) {
+    setLoad(true);
+    fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"UPDATE_STATUS", row:r, status:v}) }).then(() => muat());
+  }
+
+  function resetForm() {
+    document.getElementById('fEeg').reset();
+    document.getElementById('editRowId').value = "";
+    document.getElementById('formTitle').innerText = "Registrasi Pasien";
+    document.getElementById('btnSimpan').innerText = "SIMPAN DATA";
+    document.getElementById('btnBatal').style.display = "none";
+  }
+
+  function hapus(r) {
+    if(confirm("Hapus data " + database[r][2] + "?")){
+      setLoad(true);
+      fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"HAPUS", row:r}) }).then(() => muat());
+    }
+  }
+</script>
+</body>
+</html>

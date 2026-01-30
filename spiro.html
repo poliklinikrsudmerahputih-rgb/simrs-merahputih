@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spirometri - Daftar Pasien</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <style>
+    body { background-color: #f0f2f5; font-size: 11px; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    .header-app { background: white; padding: 10px; border-bottom: 4px solid #007bff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    
+    /* Tabel Desktop */
+    .table-responsive { height: 550px; overflow-y: auto; background: white; border: 1px solid #dee2e6; border-radius: 8px; }
+    
+    /* Sticky Header */
+    th { position: sticky; top: 0; background: #007bff !important; color: white; z-index: 10; text-align: center; border: 1px solid #dee2e6; padding: 10px !important; }
+    td { vertical-align: middle !important; border: 1px solid #dee2e6; padding: 6px !important; }
+    
+    /* Status Warna Spirometri */
+    .status-select { font-weight: bold; border-radius: 4px; border: 1px solid #ced4da; padding: 4px; width: 100%; cursor: pointer; }
+    .bg-SUDAH { background-color: #d4edda !important; color: #155724; }
+    .bg-BELUM { background-color: #fff3cd !important; color: #856404; }
+    .bg-ULANG { background-color: #f8d7da !important; color: #721c24; }
+    .bg-SELESAI { background-color: #cce5ff !important; color: #004085; }
+
+    .btn-icon { cursor: pointer; font-size: 16px; margin: 0 5px; transition: 0.2s; }
+    .btn-icon:hover { transform: scale(1.2); }
+    .loading { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center; font-weight:bold; color:#007bff; }
+
+    @media print {
+      @page { size: landscape; margin: 1cm; }
+      .no-print, .form-section, .filter-section, .btn, footer { display: none !important; }
+      #printHeader { display: block !important; }
+      .table-responsive { overflow: visible !important; height: auto !important; }
+      table { width: 100% !important; border: 1px solid #000 !important; font-size: 10pt; }
+      th { background-color: #eee !important; color: black !important; border: 1px solid #000 !important; }
+      td { border: 1px solid #000 !important; }
+      .status-select { border: none !important; appearance: none; -webkit-appearance: none; background: transparent !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="loader" class="loading">
+    <div class="text-center">
+        <div class="spinner-border text-primary mb-2"></div><br>
+        SINKRONISASI DATA...
+    </div>
+</div>
+
+<div class="header-app d-flex align-items-center mb-4 no-print">
+  <div class="container-fluid d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" alt="Logo" class="mr-3" style="height: 50px;">
+      <div>
+        <h5 class="mb-0 text-primary font-weight-bold">DAFTAR PASIEN SPIROMETRI</h5>
+        <small class="text-muted">Unit Pelayanan Spirometri - RSUD Merah Putih</small>
+      </div>
+    </div>
+    <button onclick="window.location.href='index.html'" class="btn btn-outline-dark btn-sm">
+  <i class="fas fa-home"></i>🏠 Kembali</button>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div id="printHeader" style="display: none; text-align: center; margin-bottom: 20px;">
+    <h2 style="font-weight: bold; text-decoration: underline;">DAFTAR PASIEN SPIROMETRI</h2>
+    <p>RSUD MERAH PUTIH - TAHUN 2026</p>
+    <hr style="border: 1px solid #000;">
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 no-print mb-4">
+      <div class="card p-3 border-top border-primary shadow-sm">
+        <h6 id="formTitle" class="font-weight-bold text-primary border-bottom pb-2 text-center">Registrasi Pasien</h6>
+        <form id="fSpiro">
+          <input type="hidden" id="editRowId">
+          
+          <label class="small mb-0 font-weight-bold">Tgl Periksa</label>
+          <input type="date" id="tanggalPeriksa" class="form-control form-control-sm mb-2" required>
+          
+          <input type="text" id="nama" class="form-control form-control-sm mb-2" placeholder="Nama Lengkap Pasien" required>
+          <input type="text" id="norm" class="form-control form-control-sm mb-2" placeholder="Nomor Rekam Medis (RM)" required>
+          
+          <label class="small mb-0 font-weight-bold">Tgl Rencana Spiro</label>
+          <input type="date" id="tglRencanaSpiro" class="form-control form-control-sm mb-2">
+          
+          <label class="small mb-0 font-weight-bold">Tindakan Spirometri</label>
+          <select id="tindakanSpiro" class="form-control form-control-sm mb-2 font-weight-bold">
+            <option value="BELUM">BELUM</option>
+            <option value="SUDAH">SUDAH</option>
+            <option value="ULANG">ULANG</option>
+            <option value="SELESAI">SELESAI</option>
+          </select>
+
+          <label class="small mb-0 font-weight-bold">Catatan Pasien</label>
+          <textarea id="catatan" class="form-control form-control-sm mb-2" placeholder="Isi alasan jika diulang atau catatan lainnya..." rows="3"></textarea>
+          
+          <input type="number" id="noWa" class="form-control form-control-sm mb-3" placeholder="No WhatsApp (628...)">
+          
+          <button type="button" id="btnSimpan" class="btn btn-primary btn-block font-weight-bold" onclick="simpan()">SIMPAN DATA</button>
+          <button type="button" id="btnBatal" class="btn btn-secondary btn-block btn-sm mt-2" style="display:none;" onclick="resetForm()">BATAL</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-9">
+      <div class="card p-3 shadow-sm">
+        <div class="no-print mb-3 row">
+          <div class="col-md-2">
+            <label class="small font-weight-bold">Dari:</label>
+            <input type="date" id="tglDari" class="form-control form-control-sm" onchange="filterData()">
+          </div>
+          <div class="col-md-2">
+            <label class="small font-weight-bold">Sampai:</label>
+            <input type="date" id="tglSampai" class="form-control form-control-sm" onchange="filterData()">
+          </div>
+          <div class="col-md-2">
+            <label class="small font-weight-bold">Status:</label>
+            <select id="filterStatus" class="form-control form-control-sm font-weight-bold border-primary" onchange="filterData()">
+              <option value="SEMUA">-- SEMUA --</option>
+              <option value="BELUM">BELUM</option>
+              <option value="SUDAH">SUDAH</option>
+              <option value="ULANG">ULANG</option>
+              <option value="SELESAI">SELESAI</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="small font-weight-bold">Cari Nama/RM:</label>
+            <input type="text" id="cari" class="form-control form-control-sm" placeholder="Ketik nama atau No RM..." onkeyup="filterData()">
+          </div>
+          <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-dark btn-sm btn-block font-weight-bold" onclick="window.print()">🖨️ PRINT</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-sm table-hover">
+            <thead id="hTab"></thead>
+            <tbody id="bTab"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="no-print mt-5 pb-4 text-center">
+  <hr style="width: 50%;">
+  <p class="font-weight-bold text-primary mb-0">Spirometri Management System</p>
+  <small class="text-muted">&copy; 2026 Developed by Daniel Ari Kristianto</small>
+</footer>
+
+<script>
+  // GANTI URL INI DENGAN URL DEPLOY GOOGLE APPS SCRIPT ANDA
+  const scriptURL = "https://script.google.com/macros/s/AKfycbyQQUxJ9v0jOrwX9Q3mrzDzA9xSox5qMEDuFjq250QqLXEqpDMTG_7pOJSavAwkr-LGBg/exec";
+  let database = [];
+
+  window.onload = muat;
+  function setLoad(v) { document.getElementById('loader').style.display = v ? 'flex' : 'none'; }
+
+  function muat() {
+    setLoad(true);
+    fetch(scriptURL).then(r => r.json()).then(data => {
+      database = data;
+      // Header tabel
+      let h = document.getElementById('hTab');
+      h.innerHTML = `<tr>${data[0].map(i => `<th>${i}</th>`).join('')}<th class="no-print">AKSI</th></tr>`;
+      
+      renderTable(data);
+      setLoad(false);
+    });
+  }
+
+  function renderTable(data) {
+    let b = document.getElementById('bTab');
+    b.innerHTML = "";
+    for(let i=1; i<data.length; i++){
+      let d = data[i];
+      let rowHtml = d.map((c, idx) => {
+        // Kolom Tindakan Spirometri (Kolom ke-6 / Index 5)
+        if(idx === 5) {
+          return `<td><select onchange="updStatus(${i}, this.value)" class="status-select bg-${c}">
+            <option value="BELUM" ${c=='BELUM'?'selected':''}>BELUM</option>
+            <option value="SUDAH" ${c=='SUDAH'?'selected':''}>SUDAH</option>
+            <option value="ULANG" ${c=='ULANG'?'selected':''}>ULANG</option>
+            <option value="SELESAI" ${c=='SELESAI'?'selected':''}>SELESAI</option>
+          </select></td>`;
+        }
+        return `<td>${c}</td>`;
+      }).join('');
+      b.innerHTML += `<tr>${rowHtml}<td class="no-print text-center" style="white-space:nowrap;"><span class="btn-icon" onclick="editBaris(${i})">📝</span><span class="btn-icon" onclick="hapus(${i})">🗑️</span></td></tr>`;
+    }
+  }
+
+  function filterData() {
+    let dari = document.getElementById('tglDari').value;
+    let sampai = document.getElementById('tglSampai').value;
+    let statusKunci = document.getElementById('filterStatus').value;
+    let kataKunci = document.getElementById('cari').value.toUpperCase();
+    let rows = document.getElementById('bTab').getElementsByTagName('tr');
+    
+    let nomorUrutBaru = 1; 
+
+    for (let i = 0; i < rows.length; i++) {
+      let tglBaris = rows[i].cells[1].innerText; 
+      let selectEl = rows[i].cells[5].getElementsByTagName('select')[0];
+      let statusBaris = selectEl ? selectEl.value : "";
+      let teksBaris = rows[i].innerText.toUpperCase();
+      
+      let matchTgl = ( (!dari || tglBaris >= dari) && (!sampai || tglBaris <= sampai) );
+      let matchStatus = (statusKunci === "SEMUA" || statusBaris === statusKunci);
+      let matchCari = teksBaris.indexOf(kataKunci) > -1;
+      
+      if (matchTgl && matchStatus && matchCari) {
+        rows[i].style.display = "";
+        rows[i].cells[0].innerText = nomorUrutBaru++; 
+      } else {
+        rows[i].style.display = "none";
+      }
+    }
+  }
+
+  function updStatus(r, v) {
+    setLoad(true);
+    fetch(scriptURL, { 
+      method: 'POST', 
+      body: JSON.stringify({action:"UPDATE_STATUS", row:r, status:v}) 
+    }).then(() => muat());
+  }
+
+  function editBaris(rowIdx) {
+    let d = database[rowIdx];
+    document.getElementById('editRowId').value = rowIdx;
+    document.getElementById('formTitle').innerText = "Mode Edit Data";
+    document.getElementById('tanggalPeriksa').value = d[1];
+    document.getElementById('nama').value = d[2];
+    document.getElementById('norm').value = d[3];
+    document.getElementById('tglRencanaSpiro').value = d[4];
+    document.getElementById('tindakanSpiro').value = d[5];
+    document.getElementById('catatan').value = d[6];
+    document.getElementById('noWa').value = d[7];
+    
+    document.getElementById('btnSimpan').innerText = "UPDATE DATA";
+    document.getElementById('btnSimpan').className = "btn btn-warning btn-block font-weight-bold";
+    document.getElementById('btnBatal').style.display = "block";
+    window.scrollTo(0,0);
+  }
+
+  function resetForm() {
+    document.getElementById('fSpiro').reset();
+    document.getElementById('editRowId').value = "";
+    document.getElementById('formTitle').innerText = "Registrasi Pasien";
+    document.getElementById('btnSimpan').innerText = "SIMPAN DATA";
+    document.getElementById('btnSimpan').className = "btn btn-primary btn-block font-weight-bold";
+    document.getElementById('btnBatal').style.display = "none";
+  }
+
+  function simpan() {
+    let rowId = document.getElementById('editRowId').value;
+    let payload = {
+      action: rowId === "" ? "TAMBAH" : "UPDATE_FULL", 
+      row: rowId,
+      tanggalPeriksa: document.getElementById('tanggalPeriksa').value, 
+      nama: document.getElementById('nama').value,
+      norm: document.getElementById('norm').value, 
+      tglRencanaSpiro: document.getElementById('tglRencanaSpiro').value,
+      tindakanSpiro: document.getElementById('tindakanSpiro').value,
+      catatan: document.getElementById('catatan').value,
+      noWa: document.getElementById('noWa').value
+    };
+    
+    setLoad(true);
+    fetch(scriptURL, { 
+      method: 'POST', 
+      body: JSON.stringify(payload) 
+    }).then(() => { 
+      resetForm(); 
+      muat(); 
+    });
+  }
+
+  function hapus(r) {
+    if(confirm("Hapus data " + database[r][2] + "?")){
+      setLoad(true);
+      fetch(scriptURL, { 
+        method: 'POST', 
+        body: JSON.stringify({action:"HAPUS", row:r}) 
+      }).then(() => muat());
+    }
+  }
+</script>
+</body>
+</html>
+
+
+
+
+
+
+https://script.google.com/macros/s/AKfycbyQQUxJ9v0jOrwX9Q3mrzDzA9xSox5qMEDuFjq250QqLXEqpDMTG_7pOJSavAwkr-LGBg/exec

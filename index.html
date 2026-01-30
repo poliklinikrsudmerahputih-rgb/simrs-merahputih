@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Poliklinik - RSUD Merah Putih</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
+    .hero { background: linear-gradient(135deg, #d32f2f 0%, #8b0000 100%); color: white; padding: 40px 0; border-bottom-left-radius: 50px; border-bottom-right-radius: 50px; margin-bottom: 30px; }
+    .card-poli { border: none; border-radius: 15px; transition: 0.3s; cursor: pointer; height: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .card-poli:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+    .icon-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 15px; color: white; }
+    /* Warna Ikon */
+    .bg-mata { background: #28a745; }
+    .bg-eeg { background: #d63384; }
+    .bg-spiro { background: #007bff; }
+    .bg-uro { background: #6f42c1; }
+  </style>
+</head>
+<body>
+
+<div class="hero text-center">
+  <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" style="height: 60px;" class="mb-3">
+  <h3>MONITORING PASIEN TINDAKAN</h3>
+  <p>RSUD MERAH PUTIH - TAHUN 2026</p>
+</div>
+
+<div class="container">
+  <div class="row text-center">
+    
+    <div class="col-md-3 mb-4">
+      <div class="card card-poli p-4" onclick="bukaPoli('mata.html')">
+        <div class="icon-circle bg-mata"><i class="fas fa-eye"></i></div>
+        <h5 class="font-weight-bold">POLI MATA</h5>
+        <small class="text-muted">Manajemen Tindakan Mata</small>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+      <div class="card card-poli p-4" onclick="bukaPoli('eeg.html')">
+        <div class="icon-circle bg-eeg"><i class="fas fa-brain"></i></div>
+        <h5 class="font-weight-bold">POLI EEG</h5>
+        <small class="text-muted">Rekam Otak & Saraf</small>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+      <div class="card card-poli p-4" onclick="bukaPoli('spiro.html')">
+        <div class="icon-circle bg-spiro"><i class="fas fa-lungs"></i></div>
+        <h5 class="font-weight-bold">SPIROMETRI</h5>
+        <small class="text-muted">Fungsi Paru</small>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+      <div class="card card-poli p-4" onclick="bukaPoli('urologi.html')">
+        <div class="icon-circle bg-uro"><i class="fas fa-user-md"></i></div>
+        <h5 class="font-weight-bold">UROLOGI</h5>
+        <small class="text-muted">Saluran Kemih</small>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="text-center mt-5 text-muted">
+  <hr style="width: 200px;">
+  <small>Developed by: <strong>Daniel Ari Kristianto</strong></small>
+</footer>
+
+<script>
+  function bukaPoli(namaFile) {
+    // Fungsi ini akan mencari file di folder yang sama
+    window.location.href = namaFile;
+  }
+</script>
+
+</body>
+</html>
