@@ -1,119 +1,210 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Poliklinik - RSUD Merah Putih</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <style>
-    body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
-    .hero { background: linear-gradient(135deg, #d32f2f 0%, #8b0000 100%); color: white; padding: 40px 0; border-bottom-left-radius: 50px; border-bottom-right-radius: 50px; margin-bottom: 30px; }
-    .card-poli { border: none; border-radius: 15px; transition: 0.3s; cursor: pointer; height: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .card-poli:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
-    .icon-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 15px; color: white; }
-    /* Warna Ikon */
-    .bg-mata { background: #28a745; }
-    .bg-eeg { background: #d63384; }
-    .bg-spiro { background: #007bff; }
-    .bg-uro { background: #6f42c1; }
-    .btn-logout-floating {
-    position: fixed; /* Membuatnya melayang */
-    top: 20px;       /* Jarak dari atas */
-    right: 20px;     /* Jarak dari kanan */
-    z-index: 1000;   /* Agar selalu di depan elemen lain */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Memberi bayangan agar terlihat timbul */
-    border-radius: 50px; /* Membuat tombol lonjong/bulat agar elegan */
-    padding: 8px 15px;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard RSUD Merah Putih</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            background: linear-gradient(to right bottom, #e0f2f7, #c6e9f5); /* Gradasi biru muda */
+            font-family: 'Poppins', sans-serif; /* Menggunakan font Poppins */
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* HEADER */
+        .header-dashboard { 
+            background: white; 
+            padding: 20px; 
+            border-bottom: 5px solid #007bff; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .header-dashboard img {
+            height: 90px; /* Logo lebih besar */
+            margin-bottom: 15px;
+        }
+        .header-dashboard h2 {
+            font-weight: 700; /* Lebih tebal */
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        .header-dashboard p {
+            font-size: 0.95em;
+            color: #666;
+        }
 
-/* Efek saat scroll: sedikit transparan agar tidak mengganggu pandangan data */
-.btn-logout-floating:hover {
-    opacity: 1;
-    transform: scale(1.05);
-}
-  </style>
+        /* CONTAINER UTAMA */
+        .container {
+            flex-grow: 1;
+        }
+
+        /* CARD MENU */
+        .menu-card {
+            background-color: white;
+            border-radius: 18px; /* Sudut lebih membulat */
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animasi lebih halus */
+            cursor: pointer;
+            min-height: 200px; /* Tinggi minimum agar seragam */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .menu-card:hover {
+            transform: translateY(-12px) scale(1.02); /* Sedikit naik dan membesar */
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        .card-icon { 
+            font-size: 65px; /* Ikon lebih besar */
+            margin-bottom: 15px; 
+            line-height: 1; /* Memastikan ikon tidak terlalu jauh */
+        }
+        .menu-card h5 {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .menu-card small {
+            color: #777;
+            font-size: 0.85em;
+        }
+
+        /* TOMBOL LOGOUT MELAYANG */
+        .btn-logout-floating {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-logout-floating:hover { 
+            background-color: #c82333; 
+            transform: translateY(-3px) scale(1.05);
+            color: white; 
+            text-decoration: none; 
+            box-shadow: 0 10px 25px rgba(220, 53, 69, 0.5);
+        }
+
+        /* WARNA GRADASI POLI */
+        /* Menggunakan warna yang lebih cerah dan modern untuk latar belakang ikon */
+        .card-icon.bg-mata { background: linear-gradient(135deg, #28a745, #1e7e34); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card-icon.bg-uro { background: linear-gradient(135deg, #6f42c1, #59359a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card-icon.bg-spiro { background: linear-gradient(135deg, #007bff, #0056b3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card-icon.bg-orto { background: linear-gradient(135deg, #d35400, #a04000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* FOOTER */
+        footer {
+            margin-top: auto; /* Agar footer selalu di bawah */
+            padding: 30px 0;
+            color: #777;
+            font-size: 0.85em;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            border-top: 2px solid #eee;
+        }
+
+        /* MEDIA QUERIES UNTUK RESPONSIVE */
+        @media (max-width: 768px) {
+            .header-dashboard { margin-bottom: 30px; padding: 15px; }
+            .header-dashboard img { height: 70px; margin-bottom: 10px; }
+            .header-dashboard h2 { font-size: 1.8em; }
+            .header-dashboard p { font-size: 0.85em; }
+            .menu-card { min-height: 160px; padding: 25px 15px; }
+            .card-icon { font-size: 55px; margin-bottom: 10px; }
+            .menu-card h5 { font-size: 1.1em; }
+            .btn-logout-floating { bottom: 20px; right: 20px; padding: 10px 20px; font-size: 0.9em; }
+        }
+    </style>
 </head>
 <body>
-<div class="header-app d-flex align-items-center mb-0 no-print" style="background: white; border-bottom: 1px solid #eee; padding: 10px 0;">
-  <div class="container-fluid d-flex align-items-center justify-content-between">
-    <div class="d-flex align-items-center">
-      <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" style="height: 40px;" class="mr-3">
-      <div>
-        <h5 class="mb-0 font-weight-bold" style="color:#d32f2f">SISTEM MONITORING RS</h5>
-        <small class="text-muted d-none d-md-block">RSUD Merah Putih - Tahun 2026</small>
-      </div>
-    </div>
 
-    <div>
-      <button onclick="logout()" class="btn btn-danger btn-sm btn-logout-floating font-weight-bold no-print">
-    🚪 Keluar / Logout
-</button>
-    </div>
-  </div>
+<button onclick="logout()" class="btn-logout-floating">🚪 Logout</button>
+
+<div class="header-dashboard">
+    <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" alt="Logo RSUD" class="img-fluid">
+    <h2 class="mt-3">SISTEM INFORMASI MANAJEMEN PASIEN</h2>
+    <p>RSUD MERAH PUTIH - TAHUN 2026</p>
 </div>
 
-<div class="hero text-center">
-  <div class="container">
-    <h2 class="font-weight-bold">Selamat Datang di Portal Monitoring</h2>
-    <p class="lead">Silakan pilih unit poliklinik untuk mengelola data tindakan pasien.</p>
-  </div>
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card menu-card" onclick="window.location.href='mata.html'">
+                <div class="card-icon bg-mata">
+                    <i class="fas fa-eye"></i> 
+                </div>
+                <h5>POLI MATA</h5>
+                <small>Oftalmologi</small>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card menu-card" onclick="window.location.href='urologi.html'">
+                <div class="card-icon bg-uro">
+                    <i class="fas fa-venus-mars"></i> 
+                </div>
+                <h5>POLI UROLOGI</h5>
+                <small>Saluran Kemih & Reproduksi</small>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card menu-card" onclick="window.location.href='spiro.html'">
+                <div class="card-icon bg-spiro">
+                    <i class="fas fa-lungs"></i> 
+                </div>
+                <h5>SPIROMETRI</h5>
+                <small>Pemeriksaan Fungsi Paru</small>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card menu-card" onclick="window.location.href='orto.html'">
+                <div class="card-icon bg-orto">
+                    <i class="fas fa-bone"></i> 
+                </div>
+                <h5>POLI ORTOPEDI</h5>
+                <small>Bedah Tulang & Sendi</small>
+            </div>
+        </div>
+
+    </div>
 </div>
 
-<div class="container">
-  <div class="row text-center">
-    
-    <div class="col-md-3 mb-4">
-      <div class="card card-poli p-4" onclick="bukaPoli('mata.html')">
-        <div class="icon-circle bg-mata"><i class="fas fa-eye"></i></div>
-        <h5 class="font-weight-bold">POLI MATA</h5>
-        <small class="text-muted">Manajemen Tindakan Mata</small>
-      </div>
-    </div>
-
-    <div class="col-md-3 mb-4">
-      <div class="card card-poli p-4" onclick="bukaPoli('eeg.html')">
-        <div class="icon-circle bg-eeg"><i class="fas fa-brain"></i></div>
-        <h5 class="font-weight-bold">POLI EEG</h5>
-        <small class="text-muted">Rekam Otak & Saraf</small>
-      </div>
-    </div>
-
-    <div class="col-md-3 mb-4">
-      <div class="card card-poli p-4" onclick="bukaPoli('spiro.html')">
-        <div class="icon-circle bg-spiro"><i class="fas fa-lungs"></i></div>
-        <h5 class="font-weight-bold">SPIROMETRI</h5>
-        <small class="text-muted">Fungsi Paru</small>
-      </div>
-    </div>
-
-    <div class="col-md-3 mb-4">
-      <div class="card card-poli p-4" onclick="bukaPoli('urologi.html')">
-        <div class="icon-circle bg-uro"><i class="fas fa-user-md"></i></div>
-        <h5 class="font-weight-bold">UROLOGI</h5>
-        <small class="text-muted">Saluran Kemih</small>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<footer class="text-center mt-5 text-muted">
-  <hr style="width: 200px;">
-  <small>Developed by: <strong>Daniel Ari Kristianto</strong></small>
+<footer class="text-center">
+    <p class="mb-1">Developed & Maintained by Daniel Ari Kristianto</p>
+    <small>&copy; 2026 RSUD Merah Putih. All Rights Reserved.</small>
 </footer>
 
 <script>
-  function bukaPoli(namaFile) {
-    // Fungsi ini akan mencari file di folder yang sama
-    window.location.href = namaFile;
-  }
-  function logout() {
-    if (confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
-        sessionStorage.removeItem("statusLogin");
+    if (sessionStorage.getItem("statusLogin") !== "true") {
         window.location.href = "login.html";
     }
-}
+
+    function logout() {
+        if(confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
+            sessionStorage.removeItem("statusLogin");
+            window.location.href = "login.html";
+        }
+    }
 </script>
 
 </body>

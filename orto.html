@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <script>
+    if (sessionStorage.getItem("statusLogin") !== "true") {
+      window.location.href = "login.html";
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poli Ortopedi - RSUD Merah Putih</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <style>
+    body { background-color: #fdf2e9; font-size: 11px; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    .header-app { background: white; padding: 10px; border-bottom: 4px solid #d35400; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .table-responsive { height: 550px; overflow-y: auto; background: white; border: 1px solid #e67e22; border-radius: 8px; }
+    th { position: sticky; top: 0; background: #d35400 !important; color: white; z-index: 10; text-align: center; border: 1px solid #e67e22; padding: 10px !important; }
+    td { vertical-align: middle !important; border: 1px solid #fad7a0; padding: 6px !important; }
+    
+    .status-select { font-weight: bold; border-radius: 4px; border: 1px solid #ced4da; padding: 4px; width: 100%; cursor: pointer; }
+    .bg-SELESAI { background-color: #d1e7dd !important; color: #0f5132; }
+    .bg-BELUM { background-color: #fff3cd !important; color: #664d03; }
+    .bg-ULANG { background-color: #f8d7da !important; color: #842029; }
+
+    .btn-orto { background-color: #d35400; color: white; border: none; }
+    .btn-orto:hover { background-color: #a04000; color: white; }
+    .text-orto { color: #d35400; }
+    .loading { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center; font-weight:bold; color:#d35400; }
+
+    @media print {
+      @page { size: landscape; margin: 1cm; }
+      .no-print, .btn, footer { display: none !important; }
+      #printHeader { display: block !important; text-align: center; }
+      .table-responsive { overflow: visible !important; height: auto !important; }
+      table { width: 100% !important; border: 1px solid #000 !important; font-size: 9pt; }
+      th { background-color: #f2f2f2 !important; color: black !important; border: 1px solid #000 !important; }
+      td { border: 1px solid #000 !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="loader" class="loading">SINKRONISASI DATA ORTOPEDI...</div>
+
+<div class="header-app d-flex align-items-center mb-4 no-print">
+  <div class="container-fluid d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" alt="Logo" class="mr-3" style="height: 50px;">
+      <div>
+        <h5 class="mb-0 text-orto font-weight-bold">DAFTAR PASIEN TINDAKAN POLIKLINIK ORTOPEDI</h5>
+        <small class="text-muted">RSUD MERAH PUTIH - TAHUN 2026</small>
+      </div>
+    </div>
+    <button onclick="window.location.href='index.html'" class="btn btn-outline-dark btn-sm">🏠 Kembali</button>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div id="printHeader" style="display: none;">
+    <h3 class="font-weight-bold">DAFTAR PASIEN RENCANA TINDAKAN POLIKLINIK ORTOPEDI</h3>
+    <hr style="border: 1px solid black;">
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 no-print mb-4">
+      <div class="card p-3 shadow-sm border-top border-orto">
+        <h6 id="formTitle" class="font-weight-bold text-orto border-bottom pb-2 text-center">Registrasi Pasien Orto</h6>
+        <form id="fOrto">
+          <input type="hidden" id="editRowId">
+          <label class="small mb-0 font-weight-bold">Tgl Periksa</label>
+          <input type="date" id="tglPeriksa" class="form-control form-control-sm mb-2" required>
+          <input type="text" id="nama" class="form-control form-control-sm mb-2" placeholder="Nama Pasien" required>
+          <input type="text" id="norm" class="form-control form-control-sm mb-2" placeholder="No RM" required>
+          <label class="small mb-0 font-weight-bold">Tgl Rencana Tindakan</label>
+          <input type="date" id="tglRencana" class="form-control form-control-sm mb-2">
+          <input type="text" id="namaTindakan" class="form-control form-control-sm mb-2" placeholder="Nama Tindakan (misal: ORIF)">
+          
+          <label class="small mb-0 font-weight-bold">DPJP</label>
+          <select id="dpjp" class="form-control form-control-sm mb-2">
+             <option value="dr. Ronna Nuqtho H,Sp.OT">dr. Ronna Nuqtho H,Sp.OT</option>
+             <option value="dr. Morteza Bahesdhi, Sp.OT">dr. Morteza Bahesdhi, Sp.OT</option>
+          </select>
+
+          <label class="small mb-0 font-weight-bold">Status Tindakan</label>
+          <select id="status" class="form-control form-control-sm mb-2 font-weight-bold">
+            <option value="BELUM">BELUM</option>
+            <option value="ULANG">ULANG</option>
+            <option value="SELESAI">SELESAI</option>
+          </select>
+
+          <textarea id="catatan" class="form-control form-control-sm mb-2" placeholder="Catatan" rows="2"></textarea>
+          <input type="number" id="noWa" class="form-control form-control-sm mb-3" placeholder="628...">
+          
+          <button type="button" id="btnSimpan" class="btn btn-orto btn-block font-weight-bold" onclick="simpan()">SIMPAN DATA</button>
+          <button type="button" id="btnBatal" class="btn btn-secondary btn-block btn-sm mt-2" style="display:none;" onclick="resetForm()">BATAL</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-9">
+      <div class="card p-3 shadow-sm">
+        <div class="no-print mb-3 row">
+          <div class="col-md-2"><label class="small font-weight-bold">Dari:</label><input type="date" id="tglDari" class="form-control form-control-sm" onchange="filterData()"></div>
+          <div class="col-md-2"><label class="small font-weight-bold">Sampai:</label><input type="date" id="tglSampai" class="form-control form-control-sm" onchange="filterData()"></div>
+          <div class="col-md-2">
+            <label class="small font-weight-bold">Status:</label>
+            <select id="filterStatus" class="form-control form-control-sm" onchange="filterData()">
+              <option value="SEMUA">-- SEMUA --</option>
+              <option value="BELUM">BELUM</option>
+              <option value="ULANG">ULANG</option>
+              <option value="SELESAI">SELESAI</option>
+            </select>
+          </div>
+          <div class="col-md-4"><label class="small font-weight-bold">Cari Nama/RM:</label><input type="text" id="cari" class="form-control form-control-sm" placeholder="Ketik..." onkeyup="filterData()"></div>
+          <div class="col-md-2 d-flex align-items-end"><button class="btn btn-dark btn-sm btn-block font-weight-bold" onclick="window.print()">🖨️ PRINT</button></div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead id="hTab"></thead>
+            <tbody id="bTab"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // GANTI INI DENGAN URL DEPLOY SCRIPT ORTO ANDA
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzmOJlRdg_wbJnBzQyiFud5Qbfoa6Ko69IBhJ7tWks5zVNI3P4FS_PQDkiEoAFGrEyX/exec";
+  let database = [];
+
+  window.onload = muat;
+  function setLoad(v) { document.getElementById('loader').style.display = v ? 'flex' : 'none'; }
+
+  function muat() {
+    setLoad(true);
+    fetch(scriptURL).then(r => r.json()).then(data => {
+      database = data;
+      document.getElementById('hTab').innerHTML = `<tr>${data[0].map(i => `<th>${i}</th>`).join('')}<th class="no-print">AKSI</th></tr>`;
+      renderTable(data);
+      setLoad(false);
+    });
+  }
+
+  function renderTable(data) {
+    let b = document.getElementById('bTab');
+    b.innerHTML = "";
+    for(let i=1; i<data.length; i++){
+      let d = data[i];
+      let rowHtml = d.map((c, idx) => {
+        if(idx === 7) return `<td><select onchange="updStatus(${i}, this.value)" class="status-select bg-${c}"><option value="BELUM" ${c=='BELUM'?'selected':''}>BELUM</option><option value="ULANG" ${c=='ULANG'?'selected':''}>ULANG</option><option value="SELESAI" ${c=='SELESAI'?'selected':''}>SELESAI</option></select></td>`;
+        return `<td>${c}</td>`;
+      }).join('');
+      b.innerHTML += `<tr>${rowHtml}<td class="no-print text-center" style="white-space:nowrap;"><span style="cursor:pointer" onclick="editBaris(${i})">📝</span> <span style="cursor:pointer" onclick="hapus(${i})">🗑️</span></td></tr>`;
+    }
+  }
+
+  function filterData() {
+    let dari = document.getElementById('tglDari').value, sampai = document.getElementById('tglSampai').value, statK = document.getElementById('filterStatus').value, cari = document.getElementById('cari').value.toUpperCase(), rows = document.getElementById('bTab').getElementsByTagName('tr'), no = 1;
+    for (let i = 0; i < rows.length; i++) {
+      let tgl = rows[i].cells[1].innerText, stat = rows[i].cells[7].getElementsByTagName('select')[0].value, txt = rows[i].innerText.toUpperCase();
+      let mDate = (!dari || tgl >= dari) && (!sampai || tgl <= sampai), mStat = (statK === "SEMUA" || stat === statK), mTxt = txt.indexOf(cari) > -1;
+      if (mDate && mStat && mTxt) { rows[i].style.display = ""; rows[i].cells[0].innerText = no++; } else { rows[i].style.display = "none"; }
+    }
+  }
+
+  function simpan() {
+    let rId = document.getElementById('editRowId').value;
+    let payload = {
+      action: rId === "" ? "TAMBAH" : "UPDATE_FULL", row: rId,
+      tglPeriksa: document.getElementById('tglPeriksa').value,
+      nama: document.getElementById('nama').value,
+      norm: document.getElementById('norm').value,
+      tglRencana: document.getElementById('tglRencana').value,
+      namaTindakan: document.getElementById('namaTindakan').value,
+      dpjp: document.getElementById('dpjp').value,
+      status: document.getElementById('status').value,
+      catatan: document.getElementById('catatan').value,
+      noWa: document.getElementById('noWa').value
+    };
+    setLoad(true); fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) }).then(() => { resetForm(); muat(); });
+  }
+
+  function editBaris(idx) {
+    let d = database[idx];
+    document.getElementById('editRowId').value = idx;
+    document.getElementById('formTitle').innerText = "Edit Data Orto";
+    document.getElementById('tglPeriksa').value = d[1];
+    document.getElementById('nama').value = d[2];
+    document.getElementById('norm').value = d[3];
+    document.getElementById('tglRencana').value = d[4];
+    document.getElementById('namaTindakan').value = d[5];
+    document.getElementById('dpjp').value = d[6];
+    document.getElementById('status').value = d[7];
+    document.getElementById('catatan').value = d[8];
+    document.getElementById('noWa').value = d[9];
+    document.getElementById('btnSimpan').innerText = "UPDATE DATA";
+    document.getElementById('btnBatal').style.display = "block";
+    window.scrollTo(0,0);
+  }
+
+  function updStatus(r, v) { setLoad(true); fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"UPDATE_STATUS", row:r, status:v}) }).then(() => muat()); }
+  function resetForm() { document.getElementById('fOrto').reset(); document.getElementById('editRowId').value = ""; document.getElementById('formTitle').innerText = "Registrasi Pasien Orto"; document.getElementById('btnSimpan').innerText = "SIMPAN DATA"; document.getElementById('btnBatal').style.display = "none"; }
+  function hapus(r) { if(confirm("Hapus data " + database[r][2] + "?")){ setLoad(true); fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"HAPUS", row:r}) }).then(() => muat()); } }
+</script>
+</body>
+</html>
