@@ -9,8 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         body { 
-            background: linear-gradient(to right bottom, #e0f2f7, #c6e9f5); /* Gradasi biru muda */
-            font-family: 'Poppins', sans-serif; /* Menggunakan font Poppins */
+            background: linear-gradient(to right bottom, #e0f2f7, #c6e9f5); 
+            font-family: 'Poppins', sans-serif; 
             color: #333;
             min-height: 100vh;
             display: flex;
@@ -24,62 +24,54 @@
             border-bottom: 5px solid #007bff; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
         .header-dashboard img {
-            height: 90px; /* Logo lebih besar */
+            height: 80px;
             margin-bottom: 15px;
         }
         .header-dashboard h2 {
-            font-weight: 700; /* Lebih tebal */
+            font-weight: 700;
             color: #007bff;
             margin-bottom: 5px;
-        }
-        .header-dashboard p {
-            font-size: 0.95em;
-            color: #666;
-        }
-
-        /* CONTAINER UTAMA */
-        .container {
-            flex-grow: 1;
+            letter-spacing: 1px;
         }
 
         /* CARD MENU */
         .menu-card {
             background-color: white;
-            border-radius: 18px; /* Sudut lebih membulat */
-            padding: 30px 20px;
+            border-radius: 20px;
+            padding: 25px 15px;
             text-align: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animasi lebih halus */
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             cursor: pointer;
-            min-height: 200px; /* Tinggi minimum agar seragam */
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            border: 1px solid rgba(0,0,0,0.05);
         }
         .menu-card:hover {
-            transform: translateY(-12px) scale(1.02); /* Sedikit naik dan membesar */
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            background: #fff;
         }
         .card-icon { 
-            font-size: 65px; /* Ikon lebih besar */
+            font-size: 50px; 
             margin-bottom: 15px; 
-            line-height: 1; /* Memastikan ikon tidak terlalu jauh */
-        }
-        .menu-card h5 {
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #333;
-        }
-        .menu-card small {
-            color: #777;
-            font-size: 0.85em;
+            line-height: 1;
         }
 
-        /* TOMBOL LOGOUT MELAYANG */
+        /* WARNA IKON GRADIENT */
+        .icon-mata { background: linear-gradient(135deg, #28a745, #1e7e34); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .icon-uro { background: linear-gradient(135deg, #6f42c1, #59359a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .icon-spiro { background: linear-gradient(135deg, #007bff, #0056b3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .icon-orto { background: linear-gradient(135deg, #d35400, #a04000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .icon-eeg { background: linear-gradient(135deg, #e91e63, #ad1457); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* LOGOUT FLOATING */
         .btn-logout-floating {
             position: fixed;
             bottom: 30px;
@@ -92,44 +84,22 @@
             padding: 12px 25px;
             font-weight: 600;
             box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
-            transition: all 0.3s ease;
+            transition: 0.3s;
         }
         .btn-logout-floating:hover { 
             background-color: #c82333; 
-            transform: translateY(-3px) scale(1.05);
-            color: white; 
-            text-decoration: none; 
-            box-shadow: 0 10px 25px rgba(220, 53, 69, 0.5);
+            transform: scale(1.05);
+            color: white;
+            text-decoration: none;
         }
 
-        /* WARNA GRADASI POLI */
-        /* Menggunakan warna yang lebih cerah dan modern untuk latar belakang ikon */
-        .card-icon.bg-mata { background: linear-gradient(135deg, #28a745, #1e7e34); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card-icon.bg-uro { background: linear-gradient(135deg, #6f42c1, #59359a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card-icon.bg-spiro { background: linear-gradient(135deg, #007bff, #0056b3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card-icon.bg-orto { background: linear-gradient(135deg, #d35400, #a04000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        /* FOOTER */
         footer {
-            margin-top: auto; /* Agar footer selalu di bawah */
-            padding: 30px 0;
-            color: #777;
+            margin-top: auto;
+            padding: 20px 0;
+            background: white;
+            border-top: 1px solid #eee;
+            color: #888;
             font-size: 0.85em;
-            background-color: white;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            border-top: 2px solid #eee;
-        }
-
-        /* MEDIA QUERIES UNTUK RESPONSIVE */
-        @media (max-width: 768px) {
-            .header-dashboard { margin-bottom: 30px; padding: 15px; }
-            .header-dashboard img { height: 70px; margin-bottom: 10px; }
-            .header-dashboard h2 { font-size: 1.8em; }
-            .header-dashboard p { font-size: 0.85em; }
-            .menu-card { min-height: 160px; padding: 25px 15px; }
-            .card-icon { font-size: 55px; margin-bottom: 10px; }
-            .menu-card h5 { font-size: 1.1em; }
-            .btn-logout-floating { bottom: 20px; right: 20px; padding: 10px 20px; font-size: 0.9em; }
         }
     </style>
 </head>
@@ -138,60 +108,60 @@
 <button onclick="logout()" class="btn-logout-floating">🚪 Logout</button>
 
 <div class="header-dashboard">
-    <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" alt="Logo RSUD" class="img-fluid">
-    <h2 class="mt-3">SISTEM INFORMASI MANAJEMEN PASIEN</h2>
-    <p>RSUD MERAH PUTIH - TAHUN 2026</p>
+    <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" alt="Logo">
+    <h2>SISTEM MANAJEMEN POLIKLINIK</h2>
+    <p class="text-muted">RSUD MERAH PUTIH - KABUPATEL MAGELANG</p>
 </div>
 
 <div class="container mb-5">
     <div class="row justify-content-center">
-        
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card menu-card" onclick="window.location.href='mata.html'">
-                <div class="card-icon bg-mata">
-                    <i class="fas fa-eye"></i> 
-                </div>
-                <h5>POLI MATA</h5>
+                <div class="card-icon icon-mata"><i class="fas fa-eye"></i></div>
+                <h6 class="font-weight-bold">POLI MATA</h6>
                 <small>Oftalmologi</small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card menu-card" onclick="window.location.href='urologi.html'">
-                <div class="card-icon bg-uro">
-                    <i class="fas fa-venus-mars"></i> 
-                </div>
-                <h5>POLI UROLOGI</h5>
-                <small>Saluran Kemih & Reproduksi</small>
+                <div class="card-icon icon-uro"><i class="fas fa-venus-mars"></i></div>
+                <h6 class="font-weight-bold">POLI UROLOGI</h6>
+                <small>Ginjal & Saluran Kemih</small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card menu-card" onclick="window.location.href='spiro.html'">
-                <div class="card-icon bg-spiro">
-                    <i class="fas fa-lungs"></i> 
-                </div>
-                <h5>SPIROMETRI</h5>
-                <small>Pemeriksaan Fungsi Paru</small>
+                <div class="card-icon icon-spiro"><i class="fas fa-lungs"></i></div>
+                <h6 class="font-weight-bold">SPIROMETRI</h6>
+                <small>Fungsi Saluran Napas</small>
             </div>
         </div>
+    </div>
 
+    <div class="row justify-content-center">
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card menu-card" onclick="window.location.href='orto.html'">
-                <div class="card-icon bg-orto">
-                    <i class="fas fa-bone"></i> 
-                </div>
-                <h5>POLI ORTOPEDI</h5>
+                <div class="card-icon icon-orto"><i class="fas fa-bone"></i></div>
+                <h6 class="font-weight-bold">POLI ORTOPEDI</h6>
                 <small>Bedah Tulang & Sendi</small>
             </div>
         </div>
 
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card menu-card" onclick="window.location.href='eeg.html'">
+                <div class="card-icon icon-eeg"><i class="fas fa-brain"></i></div>
+                <h6 class="font-weight-bold">POLI EEG</h6>
+                <small>Rekam Gelombang Otak</small>
+            </div>
+        </div>
     </div>
 </div>
 
 <footer class="text-center">
-    <p class="mb-1">Developed & Maintained by Daniel Ari Kristianto</p>
-    <small>&copy; 2026 RSUD Merah Putih. All Rights Reserved.</small>
+    <p class="mb-0">Aplikasi Dashboard Poliklinik &copy; 2026</p>
+    <small>User Login: <strong>Daniel Ari Kristianto</strong></small>
 </footer>
 
 <script>
@@ -200,7 +170,7 @@
     }
 
     function logout() {
-        if(confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
+        if(confirm("Apakah Anda yakin ingin keluar?")) {
             sessionStorage.removeItem("statusLogin");
             window.location.href = "login.html";
         }
