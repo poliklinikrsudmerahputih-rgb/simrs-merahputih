@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login SIMRS - Merah Putih</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <style>
+        body { background: #f4f7f6; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .login-card { width: 100%; max-width: 350px; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); background: white; border-top: 5px solid #d32f2f; }
+    </style>
+</head>
+<body>
+    <div class="login-card text-center">
+        <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" style="height: 50px;" class="mb-3">
+        <h5 class="font-weight-bold">Akses Terbatas</h5>
+        <p class="small text-muted">Silakan masukkan PIN akses</p>
+        <input type="password" id="pin" class="form-control mb-3 text-center" placeholder="Masukkan PIN" autofocus>
+        <button onclick="cekLogin()" class="btn btn-danger btn-block font-weight-bold">MASUK</button>
+        <div id="pesan" class="text-danger small mt-2"></div>
+    </div>
+
+    <script>
+        function cekLogin() {
+            const pinInput = document.getElementById('pin').value;
+            // GANTI "123456" dengan PIN rahasia pilihan Anda
+            if (pinInput === "123456") {
+                sessionStorage.setItem("statusLogin", "true");
+                window.location.href = "index.html";
+            } else {
+                document.getElementById('pesan').innerText = "PIN Salah! Silakan hubungi admin.";
+            }
+        }
+        // Biarkan user menekan Enter untuk login
+        document.getElementById('pin').addEventListener("keyup", function(e) {
+            if (e.key === "Enter") cekLogin();
+        });
+    </script>
+</body>
+</html>

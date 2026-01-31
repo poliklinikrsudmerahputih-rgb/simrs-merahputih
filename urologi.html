@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+  <script>
+    if (sessionStorage.getItem("statusLogin") !== "true") {
+      window.location.href = "login.html";
+    }
+  </script>
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Urologi - Daftar Pasien</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  
   <style>
     body { background-color: #f3f0f7; font-size: 11px; font-family: 'Segoe UI', Tahoma, sans-serif; }
     .header-app { background: white; padding: 10px; border-bottom: 4px solid #6f42c1; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -49,15 +57,20 @@
         <small class="text-muted">RSUD MERAH PUTIH - TAHUN 2026</small>
       </div>
     </div>
-    <button onclick="window.location.href='index.html'" class="btn btn-outline-dark btn-sm">
-  <i class="fas fa-home"></i>🏠 Kembali</button>
+    
+    <button onclick="window.location.href='index.html'" class="btn btn-outline-dark btn-sm font-weight-bold">
+      🏠 Kembali
+    </button>
+  </div>
+</div>
   </div>
 </div>
 
 <div class="container-fluid">
   <div id="printHeader" style="display: none;">
-    <h3>DAFTAR PASIEN RENCANA TINDAKAN POLIKLINIK UROLOGI</h3>
-    <hr>
+    <h3 class="font-weight-bold">DAFTAR PASIEN RENCANA TINDAKAN POLIKLINIK UROLOGI</h3>
+    <p>RSUD MERAH PUTIH - TAHUN 2026</p>
+    <hr style="border: 1px solid black;">
   </div>
 
   <div class="row">
@@ -66,12 +79,16 @@
         <h6 id="formTitle" class="font-weight-bold text-purple border-bottom pb-2 text-center">Registrasi Pasien</h6>
         <form id="fUro">
           <input type="hidden" id="editRowId">
+          
           <label class="small mb-0 font-weight-bold">Tgl Periksa</label>
           <input type="date" id="tglPeriksa" class="form-control form-control-sm mb-2" required>
+          
           <input type="text" id="nama" class="form-control form-control-sm mb-2" placeholder="Nama Pasien" required>
           <input type="text" id="norm" class="form-control form-control-sm mb-2" placeholder="No RM" required>
+          
           <label class="small mb-0 font-weight-bold">Tgl Rencana Tindakan</label>
           <input type="date" id="tglRencana" class="form-control form-control-sm mb-2">
+          
           <input type="text" id="namaTindakan" class="form-control form-control-sm mb-2" placeholder="Nama Tindakan (misal: DJ Stent)">
           
           <label class="small mb-0 font-weight-bold">DPJP</label>
@@ -91,7 +108,7 @@
           <input type="number" id="noWa" class="form-control form-control-sm mb-3" placeholder="No WA (628...)">
           
           <button type="button" id="btnSimpan" class="btn btn-purple btn-block font-weight-bold" onclick="simpan()">SIMPAN DATA</button>
-          <button type="button" id="btnBatal" class="btn btn-secondary btn-block btn-sm mt-2" style="display:none;" onclick="resetForm()">BATAL</button>
+          <button type="button" id="btnBatal" class="btn btn-secondary btn-block btn-sm mt-2" style="display:none;" onclick="resetForm()">BATAL EDIT</button>
         </form>
       </div>
     </div>
@@ -111,7 +128,7 @@
             </select>
           </div>
           <div class="col-md-4"><label class="small font-weight-bold">Cari Nama/RM:</label><input type="text" id="cari" class="form-control form-control-sm" placeholder="Ketik..." onkeyup="filterData()"></div>
-          <div class="col-md-2 d-flex align-items-end"><button class="btn btn-dark btn-sm btn-block" onclick="window.print()">🖨️ CETAK</button></div>
+          <div class="col-md-2 d-flex align-items-end"><button class="btn btn-dark btn-sm btn-block font-weight-bold" onclick="window.print()"><i class="fas fa-print"></i> CETAK</button></div>
         </div>
 
         <div class="table-responsive">
@@ -125,8 +142,10 @@
   </div>
 </div>
 
-<footer class="no-print mt-5 text-center text-muted">
-  <p>&copy; 2026 Poliklinik Urologi System - Daniel Ari Kristianto</p>
+<footer class="no-print mt-5 text-center text-muted pb-4">
+  <hr style="width: 30%;">
+  <p class="font-weight-bold mb-0">Designed & Maintained by Daniel Ari Kristianto</p>
+  <small>&copy; 2026 Poliklinik Urologi System</small>
 </footer>
 
 <script>
@@ -140,6 +159,7 @@
     setLoad(true);
     fetch(scriptURL).then(r => r.json()).then(data => {
       database = data;
+      // Header tabel otomatis dari Spreadsheet
       document.getElementById('hTab').innerHTML = `<tr>${data[0].map(i => `<th>${i}</th>`).join('')}<th class="no-print">AKSI</th></tr>`;
       renderTable(data);
       setLoad(false);
@@ -152,10 +172,11 @@
     for(let i=1; i<data.length; i++){
       let d = data[i];
       let rowHtml = d.map((c, idx) => {
+        // Kolom Status ada di index 7 (sesuai koding Anda)
         if(idx === 7) return `<td><select onchange="updStatus(${i}, this.value)" class="status-select bg-${c}"><option value="BELUM" ${c=='BELUM'?'selected':''}>BELUM</option><option value="ULANG" ${c=='ULANG'?'selected':''}>ULANG</option><option value="SELESAI" ${c=='SELESAI'?'selected':''}>SELESAI</option></select></td>`;
         return `<td>${c}</td>`;
       }).join('');
-      b.innerHTML += `<tr>${rowHtml}<td class="no-print text-center"><span style="cursor:pointer" onclick="editBaris(${i})">📝</span> <span style="cursor:pointer" onclick="hapus(${i})">🗑️</span></td></tr>`;
+      b.innerHTML += `<tr>${rowHtml}<td class="no-print text-center" style="white-space:nowrap;"><span class="btn-icon" style="cursor:pointer" onclick="editBaris(${i})">📝</span> <span class="btn-icon" style="cursor:pointer" onclick="hapus(${i})">🗑️</span></td></tr>`;
     }
   }
 
@@ -168,9 +189,11 @@
     let no = 1;
 
     for (let i = 0; i < rows.length; i++) {
-      let tgl = rows[i].cells[1].innerText;
-      let stat = rows[i].cells[7].getElementsByTagName('select')[0].value;
+      let tgl = rows[i].cells[1].innerText; // Tgl Periksa
+      let selectEl = rows[i].cells[7].getElementsByTagName('select')[0];
+      let stat = selectEl ? selectEl.value : "";
       let txt = rows[i].innerText.toUpperCase();
+      
       let mDate = (!dari || tgl >= dari) && (!sampai || tgl <= sampai);
       let mStat = (statusKunci === "SEMUA" || stat === statusKunci);
       let mTxt = txt.indexOf(kataKunci) > -1;
@@ -198,13 +221,18 @@
       catatan: document.getElementById('catatan').value,
       noWa: document.getElementById('noWa').value
     };
+    
     setLoad(true);
-    fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) }).then(() => { resetForm(); muat(); });
+    fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) }).then(() => { 
+      resetForm(); 
+      muat(); 
+    });
   }
 
   function editBaris(idx) {
     let d = database[idx];
     document.getElementById('editRowId').value = idx;
+    document.getElementById('formTitle').innerText = "Mode Edit Data";
     document.getElementById('tglPeriksa').value = d[1];
     document.getElementById('nama').value = d[2];
     document.getElementById('norm').value = d[3];
@@ -214,6 +242,9 @@
     document.getElementById('status').value = d[7];
     document.getElementById('catatan').value = d[8];
     document.getElementById('noWa').value = d[9];
+    
+    document.getElementById('btnSimpan').innerText = "UPDATE DATA";
+    document.getElementById('btnSimpan').className = "btn btn-info btn-block font-weight-bold";
     document.getElementById('btnBatal').style.display = "block";
     window.scrollTo(0,0);
   }
@@ -223,8 +254,21 @@
     fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"UPDATE_STATUS", row:r, status:v}) }).then(() => muat());
   }
 
-  function resetForm() { document.getElementById('fUro').reset(); document.getElementById('editRowId').value = ""; document.getElementById('btnBatal').style.display = "none"; }
-  function hapus(r) { if(confirm("Hapus data?")){ setLoad(true); fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"HAPUS", row:r}) }).then(() => muat()); } }
+  function resetForm() { 
+    document.getElementById('fUro').reset(); 
+    document.getElementById('editRowId').value = ""; 
+    document.getElementById('formTitle').innerText = "Registrasi Pasien";
+    document.getElementById('btnSimpan').innerText = "SIMPAN DATA";
+    document.getElementById('btnSimpan').className = "btn btn-purple btn-block font-weight-bold";
+    document.getElementById('btnBatal').style.display = "none"; 
+  }
+
+  function hapus(r) { 
+    if(confirm("Hapus data " + database[r][2] + "?")){ 
+      setLoad(true); 
+      fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"HAPUS", row:r}) }).then(() => muat()); 
+    } 
+  }
 </script>
 </body>
 </html>

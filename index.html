@@ -17,14 +17,47 @@
     .bg-eeg { background: #d63384; }
     .bg-spiro { background: #007bff; }
     .bg-uro { background: #6f42c1; }
+    .btn-logout-floating {
+    position: fixed; /* Membuatnya melayang */
+    top: 20px;       /* Jarak dari atas */
+    right: 20px;     /* Jarak dari kanan */
+    z-index: 1000;   /* Agar selalu di depan elemen lain */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Memberi bayangan agar terlihat timbul */
+    border-radius: 50px; /* Membuat tombol lonjong/bulat agar elegan */
+    padding: 8px 15px;
+}
+
+/* Efek saat scroll: sedikit transparan agar tidak mengganggu pandangan data */
+.btn-logout-floating:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
   </style>
 </head>
 <body>
+<div class="header-app d-flex align-items-center mb-0 no-print" style="background: white; border-bottom: 1px solid #eee; padding: 10px 0;">
+  <div class="container-fluid d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" style="height: 40px;" class="mr-3">
+      <div>
+        <h5 class="mb-0 font-weight-bold" style="color:#d32f2f">SISTEM MONITORING RS</h5>
+        <small class="text-muted d-none d-md-block">RSUD Merah Putih - Tahun 2026</small>
+      </div>
+    </div>
+
+    <div>
+      <button onclick="logout()" class="btn btn-danger btn-sm btn-logout-floating font-weight-bold no-print">
+    🚪 Keluar / Logout
+</button>
+    </div>
+  </div>
+</div>
 
 <div class="hero text-center">
-  <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" style="height: 60px;" class="mb-3">
-  <h3>MONITORING PASIEN TINDAKAN</h3>
-  <p>RSUD MERAH PUTIH - TAHUN 2026</p>
+  <div class="container">
+    <h2 class="font-weight-bold">Selamat Datang di Portal Monitoring</h2>
+    <p class="lead">Silakan pilih unit poliklinik untuk mengelola data tindakan pasien.</p>
+  </div>
 </div>
 
 <div class="container">
@@ -75,6 +108,12 @@
     // Fungsi ini akan mencari file di folder yang sama
     window.location.href = namaFile;
   }
+  function logout() {
+    if (confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
+        sessionStorage.removeItem("statusLogin");
+        window.location.href = "login.html";
+    }
+}
 </script>
 
 </body>
