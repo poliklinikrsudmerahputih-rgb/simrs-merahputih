@@ -6,6 +6,7 @@
     <title>Dashboard RSUD Merah Putih</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         body { 
@@ -71,7 +72,8 @@
         .icon-orto { background: linear-gradient(135deg, #d35400, #a04000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .icon-eeg { background: linear-gradient(135deg, #e91e63, #ad1457); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .icon-bedah { background: linear-gradient(135deg, #008080, #004d4d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-       
+        .icon-obsgyne { background: linear-gradient(135deg, #e91e63, #f06292); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.8rem !important; /* Ukuran diperbesar */display: inline-block;line-height: 1;margin-bottom: 10px;}
+        
         /* LOGOUT FLOATING */
         .btn-logout-floating {
             position: fixed;
@@ -163,6 +165,14 @@
                 <div class="card-icon icon-bedah"><i class="fas fa-user-md"></i></div>
                 <h6 class="font-weight-bold">BEDAH UMUM & ANAK</h6>
                 <small>Tindakan Bedah & Anak</small>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card menu-card text-center" onclick="window.location.href='obsgyn.html'">
+                <div class="card-body">
+                <div class="icon-obsgyne"><i class="fa-solid fa-person-pregnant fa-2x"></i></div>
+                <h6 class="font-weight-bold">POLI OBSGYN</h6><p class="small text-muted mb-0">Kandungan & Kebidanan</p>
             </div>
         </div>
     </div>
