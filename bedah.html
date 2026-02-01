@@ -6,15 +6,17 @@
       window.location.href = "login.html";
     }
   </script>
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Poli Baru - RSUD Merah Putih</title>
+  <title>Bedah Umum & Anak - Daftar Pasien</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  
   <style>
-    /* Warna Tema: Teal (#008080) */
     body { background-color: #e0f2f1; font-size: 11px; font-family: 'Segoe UI', Tahoma, sans-serif; }
     .header-app { background: white; padding: 10px; border-bottom: 4px solid #008080; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .table-responsive { height: 550px; overflow-y: auto; background: white; border: 1px solid #008080; border-radius: 8px; }
+    .table-responsive { height: 550px; overflow-y: auto; background: white; border-radius: 8px; border: 1px solid #b2dfdb; }
     th { position: sticky; top: 0; background: #008080 !important; color: white; z-index: 10; text-align: center; border: 1px solid #006666; padding: 10px !important; }
     td { vertical-align: middle !important; border: 1px solid #b2dfdb; padding: 6px !important; }
     
@@ -23,46 +25,50 @@
     .bg-BELUM { background-color: #fff3cd !important; color: #664d03; }
     .bg-ULANG { background-color: #f8d7da !important; color: #842029; }
 
-    .btn-custom { background-color: #008080; color: white; border: none; }
-    .btn-custom:hover { background-color: #006666; color: white; }
-    .text-custom { color: #008080; }
+    .btn-teal { background-color: #008080; color: white; border: none; }
+    .btn-teal:hover { background-color: #006666; color: white; }
+    .text-teal { color: #008080; }
     .loading { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center; font-weight:bold; color:#008080; }
 
     @media print {
-      .no-print { display: none !important; }
+      @page { size: landscape; margin: 1cm; }
+      .no-print, .btn, footer { display: none !important; }
       #printHeader { display: block !important; text-align: center; }
-      .table-responsive { height: auto !important; overflow: visible !important; }
+      .table-responsive { overflow: visible !important; height: auto !important; }
+      table { width: 100% !important; border: 1px solid #000 !important; font-size: 9pt; }
+      th { background-color: #f2f2f2 !important; color: black !important; border: 1px solid #000 !important; }
+      td { border: 1px solid #000 !important; }
     }
   </style>
 </head>
 <body>
 
-<div id="loader" class="loading">SINKRONISASI DATA...</div>
+<div id="loader" class="loading">SINKRONISASI DATA BEDAH...</div>
 
 <div class="header-app d-flex align-items-center mb-4 no-print">
   <div class="container-fluid d-flex align-items-center justify-content-between">
     <div class="d-flex align-items-center">
       <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" alt="Logo" class="mr-3" style="height: 50px;">
       <div>
-        <h5 class="mb-0 text-custom font-weight-bold">DAFTAR TINDAKAN_PASIEN_POLI BEDAH UMUM DAN BEDAH ANAK</h5>
+        <h5 class="mb-0 text-teal font-weight-bold">DAFTAR PASIEN TINDAKAN BEDAH UMUM & ANAK</h5>
         <small class="text-muted">RSUD MERAH PUTIH - TAHUN 2026</small>
       </div>
     </div>
-    <button onclick="window.location.href='index.html'" class="btn btn-outline-dark btn-sm">🏠 Dashboard</button>
+    <button onclick="window.location.href='index.html'" class="btn btn-outline-dark btn-sm font-weight-bold">🏠 Kembali</button>
   </div>
 </div>
 
 <div class="container-fluid">
   <div id="printHeader" style="display: none;">
-    <h3 class="font-weight-bold">DAFTAR TINDAKAN_PASIEN_POLI BEDAH UMUM DAN BEDAH ANAK</h3>
+    <h3 class="font-weight-bold">DAFTAR PASIEN RENCANA TINDAKAN BEDAH UMUM & ANAK</h3>
     <hr style="border: 1px solid black;">
   </div>
 
   <div class="row">
     <div class="col-lg-3 no-print mb-4">
-      <div class="card p-3 shadow-sm border-top border-custom">
-        <h6 id="formTitle" class="font-weight-bold text-custom border-bottom pb-2 text-center">Registrasi Pasien</h6>
-        <form id="fPoli">
+      <div class="card p-3 shadow-sm border-top border-teal">
+        <h6 id="formTitle" class="font-weight-bold text-teal border-bottom pb-2 text-center">Registrasi Bedah</h6>
+        <form id="fBedah">
           <input type="hidden" id="editRowId">
           <label class="small mb-0 font-weight-bold">Tgl Periksa</label>
           <input type="date" id="tglPeriksa" class="form-control form-control-sm mb-2" required>
@@ -74,10 +80,9 @@
           
           <label class="small mb-0 font-weight-bold">DPJP</label>
           <select id="dpjp" class="form-control form-control-sm mb-2">
-             <option value="dr. Afriliandryf R, Sp.B">dr. Afriliandryf R, Sp.B</option>
-             <option value="dr. Wawan Suci,Sp.B">dr. Wawan Suci,Sp.B</option>
-             <option value="dr. Pramudyo H,Sp.B">dr. Pramudyo H,Sp.B</option>
-             <option value="dr. M Arikhan Oktobriyanto">dr. M Arikhan Oktobriyanto</option>
+            <option value="dr. Afriliandryf R, Sp.B">dr. Afriliandryf R, Sp.B</option>
+            <option value="dr. Wawan Suci,Sp.B">dr. Wawan Suci,Sp.B</option>
+            <option value="dr. Muhammad Arikhan Oktobriyanto, Sp.BA, FIAPS">dr. Muhammad Arikhan Oktobriyanto, Sp.BA, FIAPS</option>
           </select>
 
           <label class="small mb-0 font-weight-bold">Status Tindakan</label>
@@ -90,8 +95,8 @@
           <textarea id="catatan" class="form-control form-control-sm mb-2" placeholder="Catatan" rows="2"></textarea>
           <input type="number" id="noWa" class="form-control form-control-sm mb-3" placeholder="628...">
           
-          <button type="button" id="btnSimpan" class="btn btn-custom btn-block font-weight-bold" onclick="simpan()">SIMPAN DATA</button>
-          <button type="button" id="btnBatal" class="btn btn-secondary btn-block btn-sm mt-2" style="display:none;" onclick="resetForm()">BATAL</button>
+          <button type="button" id="btnSimpan" class="btn btn-teal btn-block font-weight-bold" onclick="simpan()">SIMPAN DATA</button>
+          <button type="button" id="btnBatal" class="btn btn-secondary btn-block btn-sm mt-2" style="display:none;" onclick="resetForm()">BATAL EDIT</button>
         </form>
       </div>
     </div>
@@ -99,12 +104,23 @@
     <div class="col-lg-9">
       <div class="card p-3 shadow-sm">
         <div class="no-print mb-3 row">
-          <div class="col-md-4"><input type="text" id="cari" class="form-control form-control-sm" placeholder="Cari Nama atau No RM..." onkeyup="filterData()"></div>
-          <div class="col-md-2 d-flex align-items-end"><button class="btn btn-dark btn-sm btn-block font-weight-bold" onclick="window.print()">🖨️ PRINT</button></div>
+          <div class="col-md-2"><label class="small font-weight-bold text-teal">Dari:</label><input type="date" id="tglDari" class="form-control form-control-sm" onchange="filterData()"></div>
+          <div class="col-md-2"><label class="small font-weight-bold text-teal">Sampai:</label><input type="date" id="tglSampai" class="form-control form-control-sm" onchange="filterData()"></div>
+          <div class="col-md-2">
+            <label class="small font-weight-bold text-teal">Status:</label>
+            <select id="filterStatus" class="form-control form-control-sm font-weight-bold" onchange="filterData()">
+              <option value="SEMUA">-- SEMUA --</option>
+              <option value="BELUM">BELUM</option>
+              <option value="ULANG">ULANG</option>
+              <option value="SELESAI">SELESAI</option>
+            </select>
+          </div>
+          <div class="col-md-4"><label class="small font-weight-bold text-teal">Cari Nama/RM:</label><input type="text" id="cari" class="form-control form-control-sm" placeholder="Ketik..." onkeyup="filterData()"></div>
+          <div class="col-md-2 d-flex align-items-end"><button class="btn btn-dark btn-sm btn-block font-weight-bold" onclick="window.print()"><i class="fas fa-print"></i> CETAK</button></div>
         </div>
 
         <div class="table-responsive">
-          <table class="table table-sm">
+          <table class="table table-sm table-hover">
             <thead id="hTab"></thead>
             <tbody id="bTab"></tbody>
           </table>
@@ -114,9 +130,15 @@
   </div>
 </div>
 
+<footer class="no-print mt-5 text-center text-muted pb-4">
+  <hr style="width: 30%;">
+  <p class="font-weight-bold mb-0">Designed & Maintained by Daniel Ari Kristianto</p>
+  <small>&copy; 2026 Poliklinik Bedah Umum & Anak System</small>
+</footer>
+
 <script>
-  // GANTI INI DENGAN URL DEPLOY SCRIPT ANDA
-  const scriptURL = "https://script.google.com/macros/s/AKfycbzqVJJDUYSkz2YCfCTSU00B-omVpAjVoqzxUG_uVrOE_cxaP0Vv4qIgX6iwU_t7bB1t/exec";
+  // PASTIKAN URL INI ADALAH URL SCRIPT BEDAH YANG BARU
+  const scriptURL = "https://script.google.com/macros/s/AKfycbyJUBSGczbYHvyagvcyvQr8qch6A7VjWJSRTHgDjzmgYcJWZSlIWt5azeK9pkwMeQYZ/exec";
   let database = [];
 
   window.onload = muat;
@@ -124,12 +146,21 @@
 
   function muat() {
     setLoad(true);
-    fetch(scriptURL).then(r => r.json()).then(data => {
-      database = data;
-      document.getElementById('hTab').innerHTML = `<tr>${data[0].map(i => `<th>${i}</th>`).join('')}<th class="no-print">AKSI</th></tr>`;
-      renderTable(data);
-      setLoad(false);
-    });
+    fetch(scriptURL)
+      .then(r => r.json())
+      .then(data => {
+        database = data;
+        // Membuat Header Tabel
+        if(data.length > 0) {
+          document.getElementById('hTab').innerHTML = `<tr>${data[0].map(i => `<th>${i}</th>`).join('')}<th class="no-print">AKSI</th></tr>`;
+          renderTable(data);
+        }
+        setLoad(false);
+      })
+      .catch(err => {
+        alert("Gagal memuat data! Periksa kembali URL Script di koding.");
+        setLoad(false);
+      });
   }
 
   function renderTable(data) {
@@ -138,6 +169,7 @@
     for(let i=1; i<data.length; i++){
       let d = data[i];
       let rowHtml = d.map((c, idx) => {
+        // Kolom Status (Index 7)
         if(idx === 7) return `<td><select onchange="updStatus(${i}, this.value)" class="status-select bg-${c}"><option value="BELUM" ${c=='BELUM'?'selected':''}>BELUM</option><option value="ULANG" ${c=='ULANG'?'selected':''}>ULANG</option><option value="SELESAI" ${c=='SELESAI'?'selected':''}>SELESAI</option></select></td>`;
         return `<td>${c}</td>`;
       }).join('');
@@ -146,10 +178,29 @@
   }
 
   function filterData() {
-    let cari = document.getElementById('cari').value.toUpperCase(), rows = document.getElementById('bTab').getElementsByTagName('tr'), no = 1;
+    let dari = document.getElementById('tglDari').value;
+    let sampai = document.getElementById('tglSampai').value;
+    let statusKunci = document.getElementById('filterStatus').value;
+    let kataKunci = document.getElementById('cari').value.toUpperCase();
+    let rows = document.getElementById('bTab').getElementsByTagName('tr');
+    let no = 1;
+
     for (let i = 0; i < rows.length; i++) {
+      let tgl = rows[i].cells[1].innerText; 
+      let selectEl = rows[i].cells[7].getElementsByTagName('select')[0];
+      let stat = selectEl ? selectEl.value : "";
       let txt = rows[i].innerText.toUpperCase();
-      if (txt.indexOf(cari) > -1) { rows[i].style.display = ""; rows[i].cells[0].innerText = no++; } else { rows[i].style.display = "none"; }
+      
+      let mDate = (!dari || tgl >= dari) && (!sampai || tgl <= sampai);
+      let mStat = (statusKunci === "SEMUA" || stat === statusKunci);
+      let mTxt = txt.indexOf(kataKunci) > -1;
+
+      if (mDate && mStat && mTxt) {
+        rows[i].style.display = "";
+        rows[i].cells[0].innerText = no++;
+      } else {
+        rows[i].style.display = "none";
+      }
     }
   }
 
@@ -167,13 +218,15 @@
       catatan: document.getElementById('catatan').value,
       noWa: document.getElementById('noWa').value
     };
-    setLoad(true); fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) }).then(() => { resetForm(); muat(); });
+    setLoad(true);
+    fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) })
+      .then(() => { resetForm(); muat(); });
   }
 
   function editBaris(idx) {
     let d = database[idx];
     document.getElementById('editRowId').value = idx;
-    document.getElementById('formTitle').innerText = "Edit Data Pasien";
+    document.getElementById('formTitle').innerText = "Edit Data Bedah";
     document.getElementById('tglPeriksa').value = d[1];
     document.getElementById('nama').value = d[2];
     document.getElementById('norm').value = d[3];
@@ -184,13 +237,33 @@
     document.getElementById('catatan').value = d[8];
     document.getElementById('noWa').value = d[9];
     document.getElementById('btnSimpan').innerText = "UPDATE DATA";
+    document.getElementById('btnSimpan').className = "btn btn-info btn-block font-weight-bold";
     document.getElementById('btnBatal').style.display = "block";
     window.scrollTo(0,0);
   }
 
-  function updStatus(r, v) { setLoad(true); fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"UPDATE_STATUS", row:r, status:v}) }).then(() => muat()); }
-  function resetForm() { document.getElementById('fPoli').reset(); document.getElementById('editRowId').value = ""; document.getElementById('formTitle').innerText = "Registrasi Pasien"; document.getElementById('btnSimpan').innerText = "SIMPAN DATA"; document.getElementById('btnBatal').style.display = "none"; }
-  function hapus(r) { if(confirm("Hapus data " + database[r][2] + "?")){ setLoad(true); fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"HAPUS", row:r}) }).then(() => muat()); } }
+  function updStatus(r, v) {
+    setLoad(true);
+    fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"UPDATE_STATUS", row:r, status:v}) })
+      .then(() => muat());
+  }
+
+  function resetForm() { 
+    document.getElementById('fBedah').reset(); 
+    document.getElementById('editRowId').value = ""; 
+    document.getElementById('formTitle').innerText = "Registrasi Bedah";
+    document.getElementById('btnSimpan').innerText = "SIMPAN DATA";
+    document.getElementById('btnSimpan').className = "btn btn-teal btn-block font-weight-bold";
+    document.getElementById('btnBatal').style.display = "none"; 
+  }
+
+  function hapus(r) { 
+    if(confirm("Hapus data " + database[r][2] + "?")){ 
+      setLoad(true); 
+      fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"HAPUS", row:r}) })
+        .then(() => muat()); 
+    } 
+  }
 </script>
 </body>
 </html>
