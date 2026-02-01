@@ -1,33 +1,41 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<script>
-  if (sessionStorage.getItem("statusLogin") !== "true") {
-    window.location.href = "login.html";
-  }
-</script>
+  <script>
+    if (sessionStorage.getItem("statusLogin") !== "true") {
+      window.location.href = "login.html";
+    }
+  </script>
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spirometri - Daftar Pasien</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+  
   <style>
-    body { background-color: #f0f2f5; font-size: 11px; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { background-color: #f0f7ff; font-size: 11px; font-family: 'Segoe UI', Tahoma, sans-serif; }
     .header-app { background: white; padding: 10px; border-bottom: 4px solid #007bff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     
-    /* Tabel Styles */
-    .table-responsive { height: 550px; overflow-y: auto; background: white; border: 1px solid #dee2e6; border-radius: 8px; }
+    .table-responsive { height: 550px; overflow-y: auto; background: white; border-radius: 8px; border: 1px solid #007bff; }
     th { position: sticky; top: 0; background: #007bff !important; color: white; z-index: 10; text-align: center; border: 1px solid #dee2e6; padding: 10px !important; }
     td { vertical-align: middle !important; border: 1px solid #dee2e6; padding: 6px !important; }
     
-    /* Status Warna */
     .status-select { font-weight: bold; border-radius: 4px; border: 1px solid #ced4da; padding: 4px; width: 100%; cursor: pointer; }
-    .bg-SUDAH { background-color: #d4edda !important; color: #155724; }
-    .bg-BELUM { background-color: #fff3cd !important; color: #856404; }
-    .bg-ULANG { background-color: #f8d7da !important; color: #721c24; }
+    .bg-SUDAH { background-color: #d1e7dd !important; color: #0f5132; }
+    .bg-BELUM { background-color: #fff3cd !important; color: #664d03; }
+    .bg-ULANG { background-color: #f8d7da !important; color: #842029; }
     .bg-SELESAI { background-color: #cce5ff !important; color: #004085; }
 
-    .btn-icon { cursor: pointer; font-size: 16px; margin: 0 5px; }
+    .btn-blue { background-color: #007bff; color: white; border: none; }
+    .btn-blue:hover { background-color: #0056b3; color: white; }
+    .text-blue { color: #007bff; }
     .loading { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center; font-weight:bold; color:#007bff; }
+
+    /* Kolom Aksi */
+    td:last-child { min-width: 110px; text-align: center; }
+    .btn-aksi { cursor: pointer; font-size: 1.2rem; transition: 0.2s; margin: 0 5px; }
+    .btn-aksi:hover { transform: scale(1.2); opacity: 0.8; }
 
     @media print {
       @page { size: landscape; margin: 1cm; }
@@ -37,7 +45,6 @@
       table { width: 100% !important; border: 1px solid #000 !important; font-size: 9pt; }
       th { background-color: #f2f2f2 !important; color: black !important; border: 1px solid #000 !important; }
       td { border: 1px solid #000 !important; }
-      .status-select { border: none !important; appearance: none; background: transparent !important; }
     }
   </style>
 </head>
@@ -50,26 +57,25 @@
     <div class="d-flex align-items-center">
       <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" alt="Logo" class="mr-3" style="height: 50px;">
       <div>
-        <h5 class="mb-0 text-primary font-weight-bold">DAFTAR PASIEN SPIROMETRI</h5>
+        <h5 class="mb-0 text-blue font-weight-bold">DAFTAR PASIEN TINDAKAN SPIROMETRI</h5>
         <small class="text-muted">RSUD MERAH PUTIH - TAHUN 2026</small>
       </div>
     </div>
-    <button onclick="window.location.href='index.html'" class="btn btn-outline-dark btn-sm font-weight-bold">
-      🏠 Kembali
-    </button>
+    <button onclick="window.location.href='index.html'" class="btn btn-outline-dark btn-sm font-weight-bold">🏠 Kembali</button>
   </div>
 </div>
 
 <div class="container-fluid">
   <div id="printHeader" style="display: none;">
     <h3 class="font-weight-bold">DAFTAR PASIEN PEMERIKSAAN SPIROMETRI</h3>
+    <p>RSUD MERAH PUTIH - TAHUN 2026</p>
     <hr style="border: 1px solid black;">
   </div>
 
   <div class="row">
     <div class="col-lg-3 no-print mb-4">
-      <div class="card p-3 border-top border-primary shadow-sm">
-        <h6 id="formTitle" class="font-weight-bold text-primary border-bottom pb-2 text-center">Registrasi Pasien</h6>
+      <div class="card p-3 shadow-sm border-top border-primary">
+        <h6 id="formTitle" class="font-weight-bold text-blue border-bottom pb-2 text-center">Registrasi Pasien</h6>
         <form id="fSpiro">
           <input type="hidden" id="editRowId">
           <label class="small mb-0 font-weight-bold">Tgl Periksa</label>
@@ -90,7 +96,7 @@
           <textarea id="catatan" class="form-control form-control-sm mb-2" placeholder="Catatan/Hasil" rows="3"></textarea>
           <input type="number" id="noWa" class="form-control form-control-sm mb-3" placeholder="No WA (628...)">
           
-          <button type="button" id="btnSimpan" class="btn btn-primary btn-block font-weight-bold" onclick="simpan()">SIMPAN DATA</button>
+          <button type="button" id="btnSimpan" class="btn btn-blue btn-block font-weight-bold" onclick="simpan()">SIMPAN DATA</button>
           <button type="button" id="btnBatal" class="btn btn-secondary btn-block btn-sm mt-2" style="display:none;" onclick="resetForm()">BATAL EDIT</button>
         </form>
       </div>
@@ -112,11 +118,10 @@
             </select>
           </div>
           <div class="col-md-4"><label class="small font-weight-bold">Cari Nama/RM:</label><input type="text" id="cari" class="form-control form-control-sm" placeholder="Ketik..." onkeyup="filterData()"></div>
-          <div class="col-md-2 d-flex align-items-end"><button class="btn btn-dark btn-sm btn-block font-weight-bold" onclick="window.print()">🖨️ PRINT</button></div>
+          <div class="col-md-2 d-flex align-items-end"><button class="btn btn-dark btn-sm btn-block font-weight-bold" onclick="window.print()"><i class="fas fa-print"></i> PRINT</button></div>
         </div>
-
         <div class="table-responsive">
-          <table class="table table-sm table-hover">
+          <table class="table table-sm">
             <thead id="hTab"></thead>
             <tbody id="bTab"></tbody>
           </table>
@@ -126,15 +131,27 @@
   </div>
 </div>
 
-<footer class="no-print mt-5 pb-4 text-center">
+<div id="modalKamera" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10000; padding:20px; text-align:center;">
+  <h5 class="text-white mb-3"><i class="fas fa-camera"></i> FOTO HASIL SPIROMETRI</h5>
+  <video id="video" width="100%" style="max-width:500px; border:3px solid #007bff; border-radius:15px;" autoplay playsinline></video>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <div class="mt-4">
+    <button class="btn btn-primary btn-lg rounded-circle p-4 shadow-lg" onclick="ambilFoto()" style="width:80px; height:80px;"><i class="fas fa-circle fa-2x"></i></button>
+    <div class="mt-4"><button class="btn btn-outline-light btn-sm" onclick="tutupKamera()">BATAL / KELUAR</button></div>
+  </div>
+</div>
+
+<footer class="no-print mt-5 text-center text-muted pb-4">
   <hr style="width: 30%;">
-  <p class="font-weight-bold text-primary mb-0">Spirometri Management System</p>
-  <small class="text-muted">&copy; 2026 Developed by Daniel Ari Kristianto</small>
+  <p class="font-weight-bold mb-0">Designed & Maintained by Daniel Ari Kristianto</p>
+  <small>&copy; 2026 Spirometri Management System</small>
 </footer>
 
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbyQQUxJ9v0jOrwX9Q3mrzDzA9xSox5qMEDuFjq250QqLXEqpDMTG_7pOJSavAwkr-LGBg/exec";
+  // PASTIKAN URL INI ADALAH URL WEB APP DARI GOOGLE APPS SCRIPT SPIROMETRI
+  const scriptURL = "https://script.google.com/macros/s/AKfycbxgbzYKEAMYIE6S3SNM5hiE2lLKDd7BWNs7cdH-cOcp2EUtC6uAOV1nHMXclORiiquwAg/exec"; 
   let database = [];
+  let pasienAktif = { nama: "", norm: "", emailTujuan: "" };
 
   window.onload = muat;
   function setLoad(v) { document.getElementById('loader').style.display = v ? 'flex' : 'none'; }
@@ -155,26 +172,53 @@
     for(let i=1; i<data.length; i++){
       let d = data[i];
       let rowHtml = d.map((c, idx) => {
+        // Kolom Status di Spirometri adalah indeks ke-5 (STATUS)
         if(idx === 5) return `<td><select onchange="updStatus(${i}, this.value)" class="status-select bg-${c}"><option value="BELUM" ${c=='BELUM'?'selected':''}>BELUM</option><option value="SUDAH" ${c=='SUDAH'?'selected':''}>SUDAH</option><option value="ULANG" ${c=='ULANG'?'selected':''}>ULANG</option><option value="SELESAI" ${c=='SELESAI'?'selected':''}>SELESAI</option></select></td>`;
         return `<td>${c}</td>`;
       }).join('');
-      b.innerHTML += `<tr>${rowHtml}<td class="no-print text-center" style="white-space:nowrap;"><span class="btn-icon" style="cursor:pointer" onclick="editBaris(${i})">📝</span> <span class="btn-icon" style="cursor:pointer" onclick="hapus(${i})">🗑️</span></td></tr>`;
+      
+      b.innerHTML += `<tr>
+        ${rowHtml}
+        <td class="no-print text-center" style="white-space:nowrap;">
+          <i class="fas fa-edit text-primary btn-aksi" onclick="editBaris(${i})" title="Edit"></i> 
+          <i class="fas fa-camera text-success btn-aksi" onclick="bukaKamera('${d[2]}', '${d[3]}')" title="Foto Hasil"></i>
+          <i class="fas fa-trash-alt text-danger btn-aksi" onclick="hapus(${i})" title="Hapus"></i>
+        </td>
+      </tr>`;
     }
   }
 
   function filterData() {
-    let dari = document.getElementById('tglDari').value, sampai = document.getElementById('tglSampai').value, statK = document.getElementById('filterStatus').value, cari = document.getElementById('cari').value.toUpperCase(), rows = document.getElementById('bTab').getElementsByTagName('tr'), no = 1;
+    let dari = document.getElementById('tglDari').value;
+    let sampai = document.getElementById('tglSampai').value;
+    let statusKunci = document.getElementById('filterStatus').value;
+    let kataKunci = document.getElementById('cari').value.toUpperCase();
+    let rows = document.getElementById('bTab').getElementsByTagName('tr');
+    let no = 1;
+
     for (let i = 0; i < rows.length; i++) {
-      let tgl = rows[i].cells[1].innerText, stat = rows[i].cells[5].getElementsByTagName('select')[0].value, txt = rows[i].innerText.toUpperCase();
-      let mDate = (!dari || tgl >= dari) && (!sampai || tgl <= sampai), mStat = (statK === "SEMUA" || stat === statK), mTxt = txt.indexOf(cari) > -1;
-      if (mDate && mStat && mTxt) { rows[i].style.display = ""; rows[i].cells[0].innerText = no++; } else { rows[i].style.display = "none"; }
+      let tgl = rows[i].cells[1].innerText;
+      let selectEl = rows[i].cells[5].getElementsByTagName('select')[0];
+      let stat = selectEl ? selectEl.value : "";
+      let txt = rows[i].innerText.toUpperCase();
+      let mDate = (!dari || tgl >= dari) && (!sampai || tgl <= sampai);
+      let mStat = (statusKunci === "SEMUA" || stat === statusKunci);
+      let mTxt = txt.indexOf(kataKunci) > -1;
+
+      if (mDate && mStat && mTxt) {
+        rows[i].style.display = "";
+        rows[i].cells[0].innerText = no++;
+      } else {
+        rows[i].style.display = "none";
+      }
     }
   }
 
   function simpan() {
-    let rId = document.getElementById('editRowId').value;
+    let rowId = document.getElementById('editRowId').value;
     let payload = {
-      action: rId === "" ? "TAMBAH" : "UPDATE_FULL", row: rId,
+      action: rowId === "" ? "TAMBAH" : "UPDATE_FULL", 
+      row: rowId,
       tanggalPeriksa: document.getElementById('tanggalPeriksa').value,
       nama: document.getElementById('nama').value,
       norm: document.getElementById('norm').value,
@@ -183,7 +227,8 @@
       catatan: document.getElementById('catatan').value,
       noWa: document.getElementById('noWa').value
     };
-    setLoad(true); fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) }).then(() => { resetForm(); muat(); });
+    setLoad(true);
+    fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) }).then(() => { resetForm(); muat(); });
   }
 
   function editBaris(idx) {
@@ -203,9 +248,73 @@
     window.scrollTo(0,0);
   }
 
-  function updStatus(r, v) { setLoad(true); fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"UPDATE_STATUS", row:r, status:v}) }).then(() => muat()); }
-  function resetForm() { document.getElementById('fSpiro').reset(); document.getElementById('editRowId').value = ""; document.getElementById('formTitle').innerText = "Registrasi Pasien"; document.getElementById('btnSimpan').innerText = "SIMPAN DATA"; document.getElementById('btnSimpan').className = "btn btn-primary btn-block font-weight-bold"; document.getElementById('btnBatal').style.display = "none"; }
-  function hapus(r) { if(confirm("Hapus data " + database[r][2] + "?")){ setLoad(true); fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"HAPUS", row:r}) }).then(() => muat()); } }
+  function updStatus(r, v) {
+    setLoad(true);
+    fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"UPDATE_STATUS", row:r, status:v}) }).then(() => muat());
+  }
+
+  function resetForm() { 
+    document.getElementById('fSpiro').reset(); 
+    document.getElementById('editRowId').value = ""; 
+    document.getElementById('formTitle').innerText = "Registrasi Pasien";
+    document.getElementById('btnSimpan').innerText = "SIMPAN DATA";
+    document.getElementById('btnSimpan').className = "btn btn-blue btn-block font-weight-bold";
+    document.getElementById('btnBatal').style.display = "none"; 
+  }
+
+  function hapus(r) { 
+    if(confirm("Hapus data " + database[r][2] + "?")){ 
+      setLoad(true); 
+      fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"HAPUS", row:r}) }).then(() => muat()); 
+    } 
+  }
+
+  function bukaKamera(nama, norm) {
+    let emailStaf = prompt("Masukkan Email Anda untuk terima hasil Spirometri:", "poliklinikrsudmerahputih@gmail.com");
+    if (emailStaf == null || emailStaf == "") {
+      alert("Email wajib diisi!");
+      return;
+    }
+    pasienAktif = { nama: nama, norm: norm, emailTujuan: emailStaf };
+    document.getElementById('modalKamera').style.display = 'block';
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+    .then(stream => {
+      const video = document.getElementById('video');
+      video.srcObject = stream;
+      video.play();
+    })
+    .catch(err => { alert("Kamera gagal diakses."); tutupKamera(); });
+  }
+
+  function ambilFoto() {
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    const base64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
+    
+    setLoad(true);
+    fetch(scriptURL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: "UPLOAD_FOTO",
+        imageBlob: base64,
+        nama: pasienAktif.nama,
+        norm: pasienAktif.norm,
+        emailTujuan: pasienAktif.emailTujuan
+      })
+    })
+    .then(r => r.text())
+    .then(res => { alert(res); tutupKamera(); setLoad(false); })
+    .catch(err => { alert("Error upload."); setLoad(false); });
+  }
+
+  function tutupKamera() {
+    const video = document.getElementById('video');
+    if (video.srcObject) { video.srcObject.getTracks().forEach(t => t.stop()); }
+    document.getElementById('modalKamera').style.display = 'none';
+  }
 </script>
 </body>
 </html>

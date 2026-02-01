@@ -149,7 +149,7 @@
 </footer>
 
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbzuK5TZbPyLKMiFyS_dAkYDTn8TgvJlmqYIegjN704TYVR-1S5jn26QidbTUuJdXWRi7A/exec"; 
+  const scriptURL = "https://script.google.com/macros/s/AKfycbwLM3VDJdLEgAjZvRNkh9N9wNPfC5oaAcaXv5-EtUXs7Ajzy370zH_FQqJfSEREs2_xdw/exec"; 
   let database = [];
   let pasienAktif = { nama: "", norm: "" };
 
@@ -271,41 +271,70 @@
     } 
   }
 
-  // LOGIKA KAMERA
-  function bukaKamera(nama, norm) {
-    pasienAktif = { nama: nama, norm: norm };
-    document.getElementById('modalKamera').style.display = 'block';
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-    .then(stream => {
-      const video = document.getElementById('video');
-      video.srcObject = stream;
-      video.play();
-    })
-    .catch(err => { alert("Kamera gagal diakses."); tutupKamera(); });
+  // Ganti fungsi bukaKamera di obsgyn.html dengan ini
+function bukaKamera(nama, norm) {
+  // Tanya email tujuan kepada staf
+  let emailStaf = prompt("Masukkan Email Anda untuk pengiriman dokumen:", "staf_poli@gmail.com");
+  
+  // Jika staf menekan batal atau tidak isi email, batalkan buka kamera
+  if (emailStaf == null || emailStaf == "") {
+    alert("Email wajib diisi agar dokumen bisa terkirim!");
+    return;
   }
 
-  function ambilFoto() {
+  pasienAktif = { 
+    nama: nama, 
+    norm: norm,
+    emailTujuan: emailStaf // Simpan email tujuan staf
+  };
+  
+  document.getElementById('modalKamera').style.display = 'block';
+  
+  navigator.mediaDevices.getUserMedia({ 
+    video: { facingMode: "environment" } 
+  })
+  .then(stream => {
     const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-    const base64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
-    
-    setLoad(true);
-    fetch(scriptURL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: "UPLOAD_FOTO",
-        imageBlob: base64,
-        nama: pasienAktif.nama,
-        norm: pasienAktif.norm
-      })
+    video.srcObject = stream;
+    video.play();
+  })
+  .catch(err => {
+    alert("Kamera gagal diakses.");
+    tutupKamera();
+  });
+}
+
+// Ganti juga fungsi ambilFoto di obsgyn.html agar mengirim emailTujuan
+function ambilFoto() {
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  const base64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
+  
+  setLoad(true);
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: "UPLOAD_FOTO",
+      imageBlob: base64,
+      nama: pasienAktif.nama,
+      norm: pasienAktif.norm,
+      emailTujuan: pasienAktif.emailTujuan // Kirim email pilihan staf ke GS
     })
-    .then(r => r.text())
-    .then(res => { alert(res); tutupKamera(); setLoad(false); })
-    .catch(err => { alert("Error upload."); setLoad(false); });
-  }
+  })
+  .then(r => r.text())
+  .then(res => { 
+    alert(res); 
+    tutupKamera(); 
+    setLoad(false); 
+  })
+  .catch(err => { 
+    alert("Error upload."); 
+    setLoad(false); 
+  });
+}
 
   function tutupKamera() {
     const video = document.getElementById('video');
