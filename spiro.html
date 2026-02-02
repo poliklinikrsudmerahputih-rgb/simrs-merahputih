@@ -19,7 +19,7 @@
     
     .table-responsive { height: 550px; overflow-y: auto; background: white; border-radius: 8px; border: 1px solid #007bff; }
     th { position: sticky; top: 0; background: #007bff !important; color: white; z-index: 10; text-align: center; border: 1px solid #dee2e6; padding: 10px !important; }
-    td { vertical-align: middle !important; border: 1px solid #dee2e6; padding: 6px !important; }
+    td { vertical-align: middle !important; border: 1px solid #dee2e6; padding: 6px !important; white-space: nowrap; }
     
     .status-select { font-weight: bold; border-radius: 4px; border: 1px solid #ced4da; padding: 4px; width: 100%; cursor: pointer; }
     .bg-SUDAH { background-color: #d1e7dd !important; color: #0f5132; }
@@ -32,14 +32,12 @@
     .text-blue { color: #007bff; }
     .loading { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center; font-weight:bold; color:#007bff; }
 
-    /* Kolom Aksi */
-    td:last-child { min-width: 110px; text-align: center; }
     .btn-aksi { cursor: pointer; font-size: 1.2rem; transition: 0.2s; margin: 0 5px; }
     .btn-aksi:hover { transform: scale(1.2); opacity: 0.8; }
 
     @media print {
       @page { size: landscape; margin: 1cm; }
-      .no-print, .btn, footer { display: none !important; }
+      .no-print, .btn, footer, .col-lg-3 { display: none !important; }
       #printHeader { display: block !important; text-align: center; }
       .table-responsive { overflow: visible !important; height: auto !important; }
       table { width: 100% !important; border: 1px solid #000 !important; font-size: 9pt; }
@@ -67,8 +65,8 @@
 
 <div class="container-fluid">
   <div id="printHeader" style="display: none;">
-    <h3 class="font-weight-bold">DAFTAR PASIEN PEMERIKSAAN SPIROMETRI</h3>
-    <p>RSUD MERAH PUTIH - TAHUN 2026</p>
+    <h3 class="font-weight-bold text-center">DAFTAR PASIEN PEMERIKSAAN SPIROMETRI</h3>
+    <p class="text-center">RSUD MERAH PUTIH - TAHUN 2026</p>
     <hr style="border: 1px solid black;">
   </div>
 
@@ -148,8 +146,7 @@
 </footer>
 
 <script>
-  // PASTIKAN URL INI ADALAH URL WEB APP DARI GOOGLE APPS SCRIPT SPIROMETRI
-  const scriptURL = "https://script.google.com/macros/s/AKfycbxgbzYKEAMYIE6S3SNM5hiE2lLKDd7BWNs7cdH-cOcp2EUtC6uAOV1nHMXclORiiquwAg/exec"; 
+  const scriptURL = "https://script.google.com/macros/s/AKfycby0D16jMg69aNJ7PjbFpAOxl3xMSw8LzrWNH2p9NukACmIEuADhftR-SWhIsePNP_DVCQ/exec"; 
   let database = [];
   let pasienAktif = { nama: "", norm: "", emailTujuan: "" };
 
@@ -169,10 +166,12 @@
   function renderTable(data) {
     let b = document.getElementById('bTab');
     b.innerHTML = "";
+    let displayNo = 1; // NOMOR URUT DINAMIS
+
     for(let i=1; i<data.length; i++){
       let d = data[i];
       let rowHtml = d.map((c, idx) => {
-        // Kolom Status di Spirometri adalah indeks ke-5 (STATUS)
+        if(idx === 0) return `<td>${displayNo++}</td>`; // Timpa No dari database
         if(idx === 5) return `<td><select onchange="updStatus(${i}, this.value)" class="status-select bg-${c}"><option value="BELUM" ${c=='BELUM'?'selected':''}>BELUM</option><option value="SUDAH" ${c=='SUDAH'?'selected':''}>SUDAH</option><option value="ULANG" ${c=='ULANG'?'selected':''}>ULANG</option><option value="SELESAI" ${c=='SELESAI'?'selected':''}>SELESAI</option></select></td>`;
         return `<td>${c}</td>`;
       }).join('');
@@ -180,12 +179,22 @@
       b.innerHTML += `<tr>
         ${rowHtml}
         <td class="no-print text-center" style="white-space:nowrap;">
+          <i class="fab fa-whatsapp text-success btn-aksi" onclick="kirimWA(${i})" title="Kirim WA"></i>
+          <i class="fas fa-camera text-info btn-aksi" onclick="bukaKamera('${d[2]}', '${d[3]}')" title="Foto Hasil"></i>
           <i class="fas fa-edit text-primary btn-aksi" onclick="editBaris(${i})" title="Edit"></i> 
-          <i class="fas fa-camera text-success btn-aksi" onclick="bukaKamera('${d[2]}', '${d[3]}')" title="Foto Hasil"></i>
           <i class="fas fa-trash-alt text-danger btn-aksi" onclick="hapus(${i})" title="Hapus"></i>
         </td>
       </tr>`;
     }
+  }
+
+  function kirimWA(idx) {
+    let d = database[idx];
+    let noHP = d[7]; // Kolom No WA Spiro index 7
+    if (!noHP) return alert("Nomor WA belum diisi!");
+    if (noHP.startsWith("0")) noHP = "62" + noHP.substring(1);
+    let pesan = `Halo Bapak/Ibu *${d[2]}*, menginfokan rencana pemeriksaan *Spirometri* pada tanggal *${d[4]}*. Terima kasih.`;
+    window.open(`https://api.whatsapp.com/send?phone=${noHP}&text=${encodeURIComponent(pesan)}`, '_blank');
   }
 
   function filterData() {
@@ -194,12 +203,11 @@
     let statusKunci = document.getElementById('filterStatus').value;
     let kataKunci = document.getElementById('cari').value.toUpperCase();
     let rows = document.getElementById('bTab').getElementsByTagName('tr');
-    let no = 1;
+    let noUrutFilter = 1;
 
     for (let i = 0; i < rows.length; i++) {
-      let tgl = rows[i].cells[1].innerText;
-      let selectEl = rows[i].cells[5].getElementsByTagName('select')[0];
-      let stat = selectEl ? selectEl.value : "";
+      let tgl = database[i+1][1];
+      let stat = rows[i].cells[5].querySelector('select').value;
       let txt = rows[i].innerText.toUpperCase();
       let mDate = (!dari || tgl >= dari) && (!sampai || tgl <= sampai);
       let mStat = (statusKunci === "SEMUA" || stat === statusKunci);
@@ -207,7 +215,7 @@
 
       if (mDate && mStat && mTxt) {
         rows[i].style.display = "";
-        rows[i].cells[0].innerText = no++;
+        rows[i].cells[0].innerText = noUrutFilter++;
       } else {
         rows[i].style.display = "none";
       }
@@ -234,7 +242,7 @@
   function editBaris(idx) {
     let d = database[idx];
     document.getElementById('editRowId').value = idx;
-    document.getElementById('formTitle').innerText = "Mode Edit Data";
+    document.getElementById('formTitle').innerText = "Edit Data Spirometri";
     document.getElementById('tanggalPeriksa').value = d[1];
     document.getElementById('nama').value = d[2];
     document.getElementById('norm').value = d[3];
@@ -270,44 +278,25 @@
   }
 
   function bukaKamera(nama, norm) {
-    let emailStaf = prompt("Masukkan Email Anda untuk terima hasil Spirometri:", "poliklinikrsudmerahputih@gmail.com");
-    if (emailStaf == null || emailStaf == "") {
-      alert("Email wajib diisi!");
-      return;
-    }
+    let emailStaf = prompt("Email penerima hasil:", "poliklinikrsudmerahputih@gmail.com");
+    if (!emailStaf) return;
     pasienAktif = { nama: nama, norm: norm, emailTujuan: emailStaf };
     document.getElementById('modalKamera').style.display = 'block';
     navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-    .then(stream => {
-      const video = document.getElementById('video');
-      video.srcObject = stream;
-      video.play();
-    })
-    .catch(err => { alert("Kamera gagal diakses."); tutupKamera(); });
+    .then(stream => { document.getElementById('video').srcObject = stream; })
+    .catch(err => { alert("Kamera error"); tutupKamera(); });
   }
 
   function ambilFoto() {
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    const video = document.getElementById('video'), canvas = document.getElementById('canvas');
+    canvas.width = video.videoWidth; canvas.height = video.videoHeight;
     canvas.getContext('2d').drawImage(video, 0, 0);
     const base64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
-    
     setLoad(true);
     fetch(scriptURL, {
       method: 'POST',
-      body: JSON.stringify({
-        action: "UPLOAD_FOTO",
-        imageBlob: base64,
-        nama: pasienAktif.nama,
-        norm: pasienAktif.norm,
-        emailTujuan: pasienAktif.emailTujuan
-      })
-    })
-    .then(r => r.text())
-    .then(res => { alert(res); tutupKamera(); setLoad(false); })
-    .catch(err => { alert("Error upload."); setLoad(false); });
+      body: JSON.stringify({ action: "UPLOAD_FOTO", imageBlob: base64, ...pasienAktif })
+    }).then(r => r.text()).then(res => { alert(res); tutupKamera(); muat(); });
   }
 
   function tutupKamera() {

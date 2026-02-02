@@ -9,27 +9,27 @@
   
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Obsgyn - Daftar Pasien</title>
+  <title>THT - Daftar Pasien</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
   
   <style>
-    body { background-color: #fdf2f5; font-size: 11px; font-family: 'Segoe UI', Tahoma, sans-serif; }
-    .header-app { background: white; padding: 10px; border-bottom: 4px solid #e91e63; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    body { background-color: #f8f4ff; font-size: 11px; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    .header-app { background: white; padding: 10px; border-bottom: 4px solid #6f42c1; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     
-    .table-responsive { height: 550px; overflow-y: auto; background: white; border-radius: 8px; border: 1px solid #f8bbd0; }
-    th { position: sticky; top: 0; background: #e91e63 !important; color: white; z-index: 10; text-align: center; border: 1px solid #f8bbd0; padding: 10px !important; }
-    td { vertical-align: middle !important; border: 1px solid #fce4ec; padding: 6px !important; white-space: nowrap; }
+    .table-responsive { height: 550px; overflow-y: auto; background: white; border-radius: 8px; border: 1px solid #6f42c1; }
+    th { position: sticky; top: 0; background: #6f42c1 !important; color: white; z-index: 10; text-align: center; border: 1px solid #dee2e6; padding: 10px !important; }
+    td { vertical-align: middle !important; border: 1px solid #dee2e6; padding: 6px !important; white-space: nowrap; }
     
     .status-select { font-weight: bold; border-radius: 4px; border: 1px solid #ced4da; padding: 4px; width: 100%; cursor: pointer; }
-    .bg-SELESAI { background-color: #d1e7dd !important; color: #0f5132; }
+    .bg-SUDAH { background-color: #d1e7dd !important; color: #0f5132; }
     .bg-BELUM { background-color: #fff3cd !important; color: #664d03; }
     .bg-ULANG { background-color: #f8d7da !important; color: #842029; }
 
-    .btn-pink { background-color: #e91e63; color: white; border: none; }
-    .btn-pink:hover { background-color: #c2185b; color: white; }
-    .text-pink { color: #e91e63; }
-    .loading { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center; font-weight:bold; color:#e91e63; }
+    .btn-purple { background-color: #6f42c1; color: white; border: none; }
+    .btn-purple:hover { background-color: #5a32a3; color: white; }
+    .text-purple { color: #6f42c1; }
+    .loading { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center; font-weight:bold; color:#6f42c1; }
 
     .btn-aksi { cursor: pointer; font-size: 1.2rem; transition: 0.2s; margin: 0 5px; }
     .btn-aksi:hover { transform: scale(1.2); opacity: 0.8; }
@@ -47,14 +47,14 @@
 </head>
 <body>
 
-<div id="loader" class="loading">SINKRONISASI DATA OBSGYN...</div>
+<div id="loader" class="loading">SINKRONISASI DATA POLI THT...</div>
 
 <div class="header-app d-flex align-items-center mb-4 no-print">
   <div class="container-fluid d-flex align-items-center justify-content-between">
     <div class="d-flex align-items-center">
       <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" alt="Logo" class="mr-3" style="height: 50px;">
       <div>
-        <h5 class="mb-0 text-pink font-weight-bold">DAFTAR PASIEN TINDAKAN POLIKLINIK OBSGYN</h5>
+        <h5 class="mb-0 text-purple font-weight-bold">DAFTAR PASIEN TINDAKAN POLI THT</h5>
         <small class="text-muted">RSUD MERAH PUTIH - TAHUN 2026</small>
       </div>
     </div>
@@ -64,39 +64,41 @@
 
 <div class="container-fluid">
   <div id="printHeader" style="display: none;">
-    <h3 class="font-weight-bold text-center">DAFTAR PASIEN RENCANA TINDAKAN POLIKLINIK OBSGYN</h3>
+    <h3 class="font-weight-bold text-center">DAFTAR PASIEN TINDAKAN POLI THT</h3>
     <p class="text-center">RSUD MERAH PUTIH - TAHUN 2026</p>
     <hr style="border: 1px solid black;">
   </div>
 
   <div class="row">
     <div class="col-lg-3 no-print mb-4">
-      <div class="card p-3 shadow-sm border-top border-pink">
-        <h6 id="formTitle" class="font-weight-bold text-pink border-bottom pb-2 text-center">Registrasi Pasien</h6>
-        <form id="fObs">
+      <div class="card p-3 shadow-sm border-top border-purple" style="border-top: 5px solid #6f42c1 !important;">
+        <h6 id="formTitle" class="font-weight-bold text-purple border-bottom pb-2 text-center">Registrasi THT</h6>
+        <form id="fTht">
           <input type="hidden" id="editRowId">
+          
           <label class="small mb-0 font-weight-bold">Tgl Periksa</label>
           <input type="date" id="tglPeriksa" class="form-control form-control-sm mb-2" required>
+          
           <input type="text" id="nama" class="form-control form-control-sm mb-2" placeholder="Nama Pasien" required>
           <input type="text" id="norm" class="form-control form-control-sm mb-2" placeholder="No RM" required>
+          
           <label class="small mb-0 font-weight-bold">Tgl Rencana Tindakan</label>
-          <input type="date" id="tglRencana" class="form-control form-control-sm mb-2">
-          <input type="text" id="namaTindakan" class="form-control form-control-sm mb-2" placeholder="Nama Tindakan (USG/Kuret/SC)">
-          <label class="small mb-0 font-weight-bold">DPJP</label>
-          <select id="dpjp" class="form-control form-control-sm mb-2">
-            <option value="dr. Nungky Nugroho,Sp.OG">dr. Nungky Nugroho,Sp.OG</option>
-            <option value="dr. Danu Lestariyanto,Sp.OG">dr. Danu Lestariyanto,Sp.OG</option>
-            <option value="dr. Ricky Bernadi S,Sp.OG">dr. Ricky Bernadi S,Sp.OG</option>
-          </select>
+          <input type="date" id="tglTindakan" class="form-control form-control-sm mb-2">
+          
+          <label class="small mb-0 font-weight-bold">Nama Tindakan THT</label>
+          <input type="text" id="tindakanTHT" class="form-control form-control-sm mb-2" placeholder="Isi Tindakan (Manual)">
+
           <label class="small mb-0 font-weight-bold">Status Tindakan</label>
-          <select id="status" class="form-control form-control-sm mb-2 font-weight-bold">
+          <select id="statusTindakan" class="form-control form-control-sm mb-2 font-weight-bold">
             <option value="BELUM">BELUM</option>
+            <option value="SUDAH">SUDAH</option>
             <option value="ULANG">ULANG</option>
-            <option value="SELESAI">SELESAI</option>
           </select>
-          <textarea id="catatan" class="form-control form-control-sm mb-2" placeholder="Catatan Khusus" rows="2"></textarea>
+
+          <textarea id="catatan" class="form-control form-control-sm mb-2" placeholder="Catatan/Diagnosa" rows="3"></textarea>
           <input type="number" id="noWa" class="form-control form-control-sm mb-3" placeholder="No WA (628...)">
-          <button type="button" id="btnSimpan" class="btn btn-pink btn-block font-weight-bold" onclick="simpan()">SIMPAN DATA</button>
+          
+          <button type="button" id="btnSimpan" class="btn btn-purple btn-block font-weight-bold" onclick="simpan()">SIMPAN DATA</button>
           <button type="button" id="btnBatal" class="btn btn-secondary btn-block btn-sm mt-2" style="display:none;" onclick="resetForm()">BATAL EDIT</button>
         </form>
       </div>
@@ -112,13 +114,14 @@
             <select id="filterStatus" class="form-control form-control-sm" onchange="filterData()">
               <option value="SEMUA">-- SEMUA --</option>
               <option value="BELUM">BELUM</option>
+              <option value="SUDAH">SUDAH</option>
               <option value="ULANG">ULANG</option>
-              <option value="SELESAI">SELESAI</option>
             </select>
           </div>
           <div class="col-md-4"><label class="small font-weight-bold">Cari Nama/RM:</label><input type="text" id="cari" class="form-control form-control-sm" placeholder="Ketik..." onkeyup="filterData()"></div>
-          <div class="col-md-2 d-flex align-items-end"><button class="btn btn-dark btn-sm btn-block font-weight-bold" onclick="window.print()"><i class="fas fa-print"></i> CETAK</button></div>
+          <div class="col-md-2 d-flex align-items-end"><button class="btn btn-dark btn-sm btn-block font-weight-bold" onclick="window.print()"><i class="fas fa-print"></i> PRINT</button></div>
         </div>
+
         <div class="table-responsive">
           <table class="table table-sm">
             <thead id="hTab"></thead>
@@ -131,11 +134,12 @@
 </div>
 
 <div id="modalKamera" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10000; padding:20px; text-align:center;">
-  <h5 class="text-white mb-3"><i class="fas fa-camera"></i> FOTO DOKUMEN PASIEN</h5>
-  <video id="video" width="100%" style="max-width:500px; border:3px solid #e91e63; border-radius:15px;" autoplay playsinline></video>
+  <h5 class="text-white mb-3"><i class="fas fa-camera"></i> FOTO DOKUMEN TINDAKAN THT</h5>
+  <p id="labelFoto" class="text-warning font-weight-bold"></p>
+  <video id="video" width="100%" style="max-width:500px; border:3px solid #6f42c1; border-radius:15px;" autoplay playsinline></video>
   <canvas id="canvas" style="display:none;"></canvas>
   <div class="mt-4">
-    <button class="btn btn-danger btn-lg rounded-circle p-4 shadow-lg" onclick="ambilFoto()" style="width:80px; height:80px;"><i class="fas fa-circle fa-2x"></i></button>
+    <button class="btn btn-purple btn-lg rounded-circle p-4 shadow-lg" onclick="ambilFoto()" style="width:80px; height:80px;"><i class="fas fa-circle fa-2x"></i></button>
     <div class="mt-4"><button class="btn btn-outline-light btn-sm" onclick="tutupKamera()">BATAL / KELUAR</button></div>
   </div>
 </div>
@@ -143,14 +147,14 @@
 <footer class="no-print mt-5 text-center text-muted pb-4">
   <hr style="width: 30%;">
   <p class="font-weight-bold mb-0">Designed & Maintained by Daniel Ari Kristianto</p>
-  <small>&copy; 2026 Poliklinik Obsgyn System</small>
+  <small>&copy; 2026 THT Management System</small>
 </footer>
 
 <script>
-  // URL Script Bapak
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwLM3VDJdLEgAjZvRNkh9N9wNPfC5oaAcaXv5-EtUXs7Ajzy370zH_FQqJfSEREs2_xdw/exec"; 
+  // PASTIKAN SCRIPT URL INI ADALAH URL SCRIPT THT BAPAK
+  const scriptURL = "https://script.google.com/macros/s/AKfycbwuAk32qrKKO2m5O3TSbCbZAePCRfBOOEC03xw78fi2yRzIhOnQEGATuUmkDAdJlvxX3Q/exec"; 
   let database = [];
-  let pasienAktif = { nama: "", norm: "", emailTujuan: "" };
+  let pasienAktif = { nama: "", norm: "", tindakan: "", emailTujuan: "" };
 
   window.onload = muat;
   function setLoad(v) { document.getElementById('loader').style.display = v ? 'flex' : 'none'; }
@@ -159,7 +163,7 @@
     setLoad(true);
     fetch(scriptURL).then(r => r.json()).then(data => {
       database = data;
-      // Header Tabel
+      // Header Table: NO, TGL PERIKSA, NAMA, RM, TGL TINDAKAN, TINDAKAN THT, STATUS, CATATAN, WA
       document.getElementById('hTab').innerHTML = `<tr>${data[0].map(i => `<th>${i}</th>`).join('')}<th class="no-print">AKSI</th></tr>`;
       renderTable(data);
       setLoad(false);
@@ -169,13 +173,14 @@
   function renderTable(data) {
     let b = document.getElementById('bTab');
     b.innerHTML = "";
-    let displayNo = 1; // Counter nomor urut dinamis
+    let displayNo = 1; 
 
     for(let i=1; i<data.length; i++){
       let d = data[i];
       let rowHtml = d.map((c, idx) => {
-        if(idx === 0) return `<td>${displayNo++}</td>`; // Timpa kolom NO dengan urutan dinamis
-        if(idx === 7) return `<td><select onchange="updStatus(${i}, this.value)" class="status-select bg-${c}"><option value="BELUM" ${c=='BELUM'?'selected':''}>BELUM</option><option value="ULANG" ${c=='ULANG'?'selected':''}>ULANG</option><option value="SELESAI" ${c=='SELESAI'?'selected':''}>SELESAI</option></select></td>`;
+        if(idx === 0) return `<td>${displayNo++}</td>`; 
+        // Dropdown status di kolom index 6
+        if(idx === 6) return `<td><select onchange="updStatus(${i}, this.value)" class="status-select bg-${c}"><option value="BELUM" ${c=='BELUM'?'selected':''}>BELUM</option><option value="SUDAH" ${c=='SUDAH'?'selected':''}>SUDAH</option><option value="ULANG" ${c=='ULANG'?'selected':''}>ULANG</option></select></td>`;
         return `<td>${c}</td>`;
       }).join('');
       
@@ -183,7 +188,7 @@
         ${rowHtml}
         <td class="no-print text-center" style="white-space:nowrap;">
           <i class="fab fa-whatsapp text-success btn-aksi" onclick="kirimWA(${i})" title="Kirim WA"></i>
-          <i class="fas fa-camera text-info btn-aksi" onclick="bukaKamera('${d[2]}', '${d[3]}')" title="Foto Dokumen"></i>
+          <i class="fas fa-camera text-info btn-aksi" onclick="bukaKamera(${i})" title="Foto Dokumen"></i>
           <i class="fas fa-edit text-primary btn-aksi" onclick="editBaris(${i})" title="Edit"></i> 
           <i class="fas fa-trash-alt text-danger btn-aksi" onclick="hapus(${i})" title="Hapus"></i>
         </td>
@@ -197,13 +202,11 @@
     let statusKunci = document.getElementById('filterStatus').value;
     let kataKunci = document.getElementById('cari').value.toUpperCase();
     let rows = document.getElementById('bTab').getElementsByTagName('tr');
-    let noUrutFilter = 1; // Reset nomor urut untuk data hasil filter
+    let noUrutFilter = 1;
 
     for (let i = 0; i < rows.length; i++) {
-      // Data asli dari array database (database[i+1] karena baris 0 adalah header)
-      let rowData = database[i+1]; 
-      let tgl = rowData[1];
-      let stat = rows[i].cells[7].querySelector('select').value;
+      let tgl = database[i+1][1]; // Tgl Periksa
+      let stat = rows[i].cells[6].querySelector('select').value;
       let txt = rows[i].innerText.toUpperCase();
       
       let mDate = (!dari || tgl >= dari) && (!sampai || tgl <= sampai);
@@ -212,64 +215,24 @@
 
       if (mDate && mStat && mTxt) {
         rows[i].style.display = "";
-        rows[i].cells[0].innerText = noUrutFilter++; // Update nomor urut secara real-time
+        rows[i].cells[0].innerText = noUrutFilter++;
       } else {
         rows[i].style.display = "none";
       }
     }
   }
 
-  // --- LOGIKA WHATSAPP ---
-  function kirimWA(idx) {
-    let d = database[idx];
-    let noHP = d[9];
-    if (!noHP) return alert("Nomor WA kosong!");
-    if (noHP.startsWith("0")) noHP = "62" + noHP.substring(1);
-    let pesan = `Halo Ibu *${d[2]}*, kami menginfokan rencana tindakan *${d[5]}* di Poliklinik Obsgyn pada tanggal *${d[4]}*. Terima kasih.`;
-    window.open(`https://api.whatsapp.com/send?phone=${noHP}&text=${encodeURIComponent(pesan)}`, '_blank');
-  }
-
-  // --- LOGIKA KAMERA ---
-  function bukaKamera(nama, norm) {
-    let emailStaf = prompt("Kirim dokumen ke email:", "staf_poli_obsgyn@gmail.com");
-    if (!emailStaf) return;
-    pasienAktif = { nama: nama, norm: norm, emailTujuan: emailStaf };
-    document.getElementById('modalKamera').style.display = 'block';
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-    .then(s => { document.getElementById('video').srcObject = s; })
-    .catch(err => { alert("Kamera error"); tutupKamera(); });
-  }
-
-  function ambilFoto() {
-    const v = document.getElementById('video'), c = document.getElementById('canvas');
-    c.width = v.videoWidth; c.height = v.videoHeight;
-    c.getContext('2d').drawImage(v, 0, 0);
-    const b64 = c.toDataURL('image/jpeg', 0.7).split(',')[1];
-    setLoad(true);
-    fetch(scriptURL, {
-      method: 'POST',
-      body: JSON.stringify({ action: "UPLOAD_FOTO", imageBlob: b64, ...pasienAktif })
-    }).then(r => r.text()).then(res => { alert(res); tutupKamera(); muat(); });
-  }
-
-  function tutupKamera() {
-    let v = document.getElementById('video');
-    if (v.srcObject) v.srcObject.getTracks().forEach(t => t.stop());
-    document.getElementById('modalKamera').style.display = 'none';
-  }
-
-  // --- LOGIKA CRUD ---
   function simpan() {
     let rowId = document.getElementById('editRowId').value;
     let payload = {
-      action: rowId === "" ? "TAMBAH" : "UPDATE_FULL", row: rowId,
+      action: rowId === "" ? "TAMBAH" : "UPDATE_FULL", 
+      row: rowId,
       tglPeriksa: document.getElementById('tglPeriksa').value,
       nama: document.getElementById('nama').value,
       norm: document.getElementById('norm').value,
-      tglRencana: document.getElementById('tglRencana').value,
-      namaTindakan: document.getElementById('namaTindakan').value,
-      dpjp: document.getElementById('dpjp').value,
-      status: document.getElementById('status').value,
+      tglTindakan: document.getElementById('tglTindakan').value,
+      tindakanTHT: document.getElementById('tindakanTHT').value,
+      status: document.getElementById('statusTindakan').value,
       catatan: document.getElementById('catatan').value,
       noWa: document.getElementById('noWa').value
     };
@@ -280,18 +243,16 @@
   function editBaris(idx) {
     let d = database[idx];
     document.getElementById('editRowId').value = idx;
-    document.getElementById('formTitle').innerText = "Edit Data Pasien";
+    document.getElementById('formTitle').innerText = "Edit Data THT";
     document.getElementById('tglPeriksa').value = d[1];
     document.getElementById('nama').value = d[2];
     document.getElementById('norm').value = d[3];
-    document.getElementById('tglRencana').value = d[4];
-    document.getElementById('namaTindakan').value = d[5];
-    document.getElementById('dpjp').value = d[6];
-    document.getElementById('status').value = d[7];
-    document.getElementById('catatan').value = d[8];
-    document.getElementById('noWa').value = d[9];
+    document.getElementById('tglTindakan').value = d[4];
+    document.getElementById('tindakanTHT').value = d[5];
+    document.getElementById('statusTindakan').value = d[6];
+    document.getElementById('catatan').value = d[7];
+    document.getElementById('noWa').value = d[8];
     document.getElementById('btnSimpan').innerText = "UPDATE DATA";
-    document.getElementById('btnSimpan').className = "btn btn-info btn-block font-weight-bold";
     document.getElementById('btnBatal').style.display = "block";
     window.scrollTo(0,0);
   }
@@ -302,19 +263,57 @@
   }
 
   function resetForm() { 
-    document.getElementById('fObs').reset(); 
+    document.getElementById('fTht').reset(); 
     document.getElementById('editRowId').value = ""; 
-    document.getElementById('formTitle').innerText = "Registrasi Pasien";
+    document.getElementById('formTitle').innerText = "Registrasi THT";
     document.getElementById('btnSimpan').innerText = "SIMPAN DATA";
-    document.getElementById('btnSimpan').className = "btn btn-pink btn-block font-weight-bold";
     document.getElementById('btnBatal').style.display = "none"; 
   }
 
   function hapus(r) { 
-    if(confirm("Hapus data " + database[r][2] + "?")){ 
+    if(confirm("Hapus data THT " + database[r][2] + "?")){ 
       setLoad(true); 
       fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"HAPUS", row:r}) }).then(() => muat()); 
     } 
+  }
+
+  function kirimWA(idx) {
+    let d = database[idx];
+    let noHP = d[8];
+    if (!noHP) return alert("Nomor WA belum diisi!");
+    if (noHP.startsWith("0")) noHP = "62" + noHP.substring(1);
+    let pesan = `Halo Bapak/Ibu *${d[2]}*, jadwal tindakan THT Anda (*${d[5]}*) adalah tanggal *${d[4]}*. Terima kasih.`;
+    window.open(`https://api.whatsapp.com/send?phone=${noHP}&text=${encodeURIComponent(pesan)}`, '_blank');
+  }
+
+  function bukaKamera(idx) {
+    let d = database[idx];
+    let emailStaf = prompt("Email penerima hasil:", "poli_tht_rsudmp@gmail.com");
+    if (!emailStaf) return;
+    pasienAktif = { nama: d[2], norm: d[3], tindakan: d[5], emailTujuan: emailStaf };
+    document.getElementById('labelFoto').innerText = `Pasien: ${d[2]} | RM: ${d[3]} | Tindakan: ${d[5]}`;
+    document.getElementById('modalKamera').style.display = 'block';
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+    .then(stream => { document.getElementById('video').srcObject = stream; })
+    .catch(err => { alert("Kamera error"); tutupKamera(); });
+  }
+
+  function ambilFoto() {
+    const video = document.getElementById('video'), canvas = document.getElementById('canvas');
+    canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    const base64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
+    setLoad(true);
+    fetch(scriptURL, {
+      method: 'POST',
+      body: JSON.stringify({ action: "UPLOAD_FOTO", imageBlob: base64, ...pasienAktif })
+    }).then(r => r.text()).then(res => { alert(res); tutupKamera(); muat(); });
+  }
+
+  function tutupKamera() {
+    const video = document.getElementById('video');
+    if (video.srcObject) { video.srcObject.getTracks().forEach(t => t.stop()); }
+    document.getElementById('modalKamera').style.display = 'none';
   }
 </script>
 </body>

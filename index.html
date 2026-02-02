@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard RSUD Merah Putih</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -21,28 +20,20 @@
         /* HEADER */
         .header-dashboard { 
             background: white; 
-            padding: 20px; 
+            padding: 25px; 
             border-bottom: 5px solid #007bff; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
-        .header-dashboard img {
-            height: 80px;
-            margin-bottom: 15px;
-        }
-        .header-dashboard h2 {
-            font-weight: 700;
-            color: #007bff;
-            margin-bottom: 5px;
-            letter-spacing: 1px;
-        }
+        .header-dashboard img { height: 75px; margin-bottom: 10px; }
+        .header-dashboard h2 { font-weight: 700; color: #007bff; margin-bottom: 5px; letter-spacing: 1px; text-transform: uppercase; }
 
         /* CARD MENU */
         .menu-card {
             background-color: white;
             border-radius: 20px;
-            padding: 25px 15px;
+            padding: 30px 15px;
             text-align: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -54,91 +45,85 @@
             align-items: center;
             border: 1px solid rgba(0,0,0,0.05);
         }
-        .menu-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-            background: #fff;
+        .menu-card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 15px 30px rgba(0,123,255,0.2); 
+            background-color: #ffffff;
         }
-        .card-icon { 
-            font-size: 50px; 
-            margin-bottom: 15px; 
-            line-height: 1;
-        }
+        .card-icon { font-size: 50px; margin-bottom: 15px; line-height: 1; transition: 0.3s; }
+        .menu-card:hover .card-icon { transform: scale(1.1); }
 
-        /* WARNA IKON GRADIENT */
-        .icon-mata { background: linear-gradient(135deg, #28a745, #1e7e34); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .icon-uro { background: linear-gradient(135deg, #6f42c1, #59359a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .icon-spiro { background: linear-gradient(135deg, #007bff, #0056b3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .icon-orto { background: linear-gradient(135deg, #d35400, #a04000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .icon-eeg { background: linear-gradient(135deg, #e91e63, #ad1457); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .icon-bedah { background: linear-gradient(135deg, #008080, #004d4d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .icon-obsgyne { background: linear-gradient(135deg, #e91e63, #f06292); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.8rem !important; /* Ukuran diperbesar */display: inline-block;line-height: 1;margin-bottom: 10px;}
+        /* GRADIENT ICONS (PENYESUAIAN WARNA SELARAS) */
+        .icon-ranap { background: linear-gradient(135deg, #007bff, #00d2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .icon-mata { background: linear-gradient(135deg, #28a745, #a2ffb3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .icon-uro { background: linear-gradient(135deg, #6f42c1, #a29bfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .icon-spiro { background: linear-gradient(135deg, #17a2b8, #81ecec); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .icon-orto { background: linear-gradient(135deg, #d35400, #ff9f43); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .icon-eeg { background: linear-gradient(135deg, #e91e63, #ff78b0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .icon-bedah { background: linear-gradient(135deg, #008080, #48dbfb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .icon-tht { background: linear-gradient(135deg, #6f42c1, #3c138f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .icon-obsgyne { background: linear-gradient(135deg, #ff4d4d, #ff9ff3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* LOGOUT FLOATING */
+        /* LOGOUT BUTTON */
         .btn-logout-floating {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 1000;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 12px 25px;
-            font-weight: 600;
-            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
-            transition: 0.3s;
+            position: fixed; bottom: 30px; right: 30px; z-index: 1000;
+            background-color: #dc3545; color: white; border: none;
+            border-radius: 50px; padding: 12px 25px; font-weight: 600;
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3); transition: 0.3s;
         }
-        .btn-logout-floating:hover { 
-            background-color: #c82333; 
-            transform: scale(1.05);
-            color: white;
-            text-decoration: none;
-        }
+        .btn-logout-floating:hover { background-color: #c82333; transform: scale(1.05); color: white; text-decoration: none; }
 
-        footer {
-            margin-top: auto;
-            padding: 20px 0;
-            background: white;
-            border-top: 1px solid #eee;
-            color: #888;
-            font-size: 0.85em;
+        footer { 
+            margin-top: auto; 
+            padding: 20px 0; 
+            background: white; 
+            border-top: 1px solid #eee; 
+            color: #888; 
+            font-size: 0.85em; 
         }
     </style>
 </head>
 <body>
 
-<button onclick="logout()" class="btn-logout-floating">🚪 Logout</button>
+<button onclick="logout()" class="btn-logout-floating"><i class="fas fa-sign-out-alt"></i> Logout</button>
 
 <div class="header-dashboard">
-    <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" alt="Logo">
+    <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" alt="Logo RSUD">
     <h2>SISTEM MANAJEMEN POLIKLINIK</h2>
-    <p class="text-muted">RSUD MERAH PUTIH - KABUPATEN MAGELANG</p>
+    <p class="text-muted mb-0">RSUD MERAH PUTIH - KABUPATEN MAGELANG</p>
 </div>
 
 <div class="container mb-5">
     <div class="row justify-content-center">
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card menu-card" onclick="window.location.href='ranap.html'">
+                <div class="card-icon icon-ranap"><i class="fas fa-bed-pulse"></i></div>
+                <h6 class="font-weight-bold" style="color: #007bff;">RAWAT INAP</h6>
+                <small class="text-muted">Registrasi Pasien</small>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card menu-card" onclick="window.location.href='mata.html'">
                 <div class="card-icon icon-mata"><i class="fas fa-eye"></i></div>
-                <h6 class="font-weight-bold">POLI MATA</h6>
-                <small>Oftalmologi</small>
+                <h6 class="font-weight-bold" style="color: #28a745;">POLI MATA</h6>
+                <small class="text-muted">Oftalmologi</small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card menu-card" onclick="window.location.href='urologi.html'">
                 <div class="card-icon icon-uro"><i class="fas fa-venus-mars"></i></div>
-                <h6 class="font-weight-bold">POLI UROLOGI</h6>
-                <small>Ginjal & Saluran Kemih</small>
+                <h6 class="font-weight-bold" style="color: #6f42c1;">POLI UROLOGI</h6>
+                <small class="text-muted">Ginjal & Saluran Kemih</small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card menu-card" onclick="window.location.href='spiro.html'">
                 <div class="card-icon icon-spiro"><i class="fas fa-lungs"></i></div>
-                <h6 class="font-weight-bold">SPIROMETRI</h6>
-                <small>Fungsi Saluran Napas</small>
+                <h6 class="font-weight-bold" style="color: #17a2b8;">SPIROMETRI</h6>
+                <small class="text-muted">Fungsi Saluran Napas</small>
             </div>
         </div>
     </div>
@@ -147,49 +132,62 @@
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card menu-card" onclick="window.location.href='orto.html'">
                 <div class="card-icon icon-orto"><i class="fas fa-bone"></i></div>
-                <h6 class="font-weight-bold">POLI ORTOPEDI</h6>
-                <small>Bedah Tulang & Sendi</small>
+                <h6 class="font-weight-bold" style="color: #d35400;">POLI ORTOPEDI</h6>
+                <small class="text-muted">Bedah Tulang & Sendi</small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card menu-card" onclick="window.location.href='eeg.html'">
                 <div class="card-icon icon-eeg"><i class="fas fa-brain"></i></div>
-                <h6 class="font-weight-bold">POLI EEG</h6>
-                <small>Rekam Gelombang Otak</small>
+                <h6 class="font-weight-bold" style="color: #e91e63;">POLI EEG</h6>
+                <small class="text-muted">Rekam Gelombang Otak</small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card menu-card" onclick="window.location.href='bedah.html'">
                 <div class="card-icon icon-bedah"><i class="fas fa-user-md"></i></div>
-                <h6 class="font-weight-bold">BEDAH UMUM & ANAK</h6>
-                <small>Tindakan Bedah & Anak</small>
+                <h6 class="font-weight-bold" style="color: #008080;">BEDAH UMUM</h6>
+                <small class="text-muted">Tindakan Bedah & Anak</small>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="card menu-card text-center" onclick="window.location.href='obsgyn.html'">
-                <div class="card-body">
-                <div class="icon-obsgyne"><i class="fa-solid fa-person-pregnant fa-2x"></i></div>
-                <h6 class="font-weight-bold">POLI OBSGYN</h6><p class="small text-muted mb-0">Kandungan & Kebidanan</p>
+            <div class="card menu-card" onclick="window.location.href='tht.html'">
+                <div class="card-icon icon-tht"><i class="fas fa-ear"></i></div>
+                <h6 class="font-weight-bold" style="color: #6f42c1;">POLI THT</h6>
+                <small class="text-muted">Telinga & Hidung</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card menu-card" onclick="window.location.href='obsgyn.html'">
+                <div class="card-icon icon-obsgyne"><i class="fa-solid fa-person-pregnant"></i></div>
+                <h6 class="font-weight-bold" style="color: #ff4d4d;">POLI OBSGYN</h6>
+                <small class="text-muted">Kandungan & Kebidanan</small>
             </div>
         </div>
     </div>
 </div>
 
 <footer class="text-center">
-    <p class="mb-0">Aplikasi Dashboard Poliklinik &copy; 2026</p>
-    <small>User Login: <strong>Daniel Ari Kristianto</strong></small>
+    <hr style="width: 20%; border-top: 1px solid #007bff; margin: 0 auto 10px auto;">
+    <p class="mb-0">Designed & Maintained by <strong>Daniel Ari Kristianto</strong></p>
+    <small>User Login: <strong>Administrator</strong> | Dashboard &copy; 2026</small>
 </footer>
 
 <script>
+    // Proteksi Halaman
     if (sessionStorage.getItem("statusLogin") !== "true") {
         window.location.href = "login.html";
     }
 
+    // Fungsi Logout
     function logout() {
-        if(confirm("Apakah Anda yakin ingin keluar?")) {
+        if(confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
             sessionStorage.removeItem("statusLogin");
             window.location.href = "login.html";
         }

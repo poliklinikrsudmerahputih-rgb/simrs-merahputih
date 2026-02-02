@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <script>
+    if (sessionStorage.getItem("statusLogin") !== "true") {
+      window.location.href = "login.html";
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrasi Ranap - RSD Merah Putih</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <style>
+    body { background-color: #f4f7f6; font-size: 11px; font-family: 'Poppins', sans-serif; }
+    .header-app { background: white; padding: 10px; border-bottom: 5px solid #007bff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .table-responsive { height: 500px; overflow-y: auto; background: white; border-radius: 8px; border: 1px solid #dee2e6; }
+    th { position: sticky; top: 0; background: #007bff !important; color: white; z-index: 10; text-align: center; border: 1px solid #dee2e6; padding: 10px !important; }
+    td { vertical-align: middle !important; border: 1px solid #dee2e6; padding: 6px !important; white-space: nowrap; }
+    
+    .loading { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center; font-weight:bold; color:#007bff; }
+    .btn-aksi { cursor: pointer; font-size: 1.1rem; margin: 0 2px; transition: 0.2s; }
+    .btn-aksi:hover { transform: scale(1.2); opacity: 0.8; }
+
+    /* Gaya Statistik Analisis */
+    .analisis-card { background: white; border-left: 4px solid #007bff; padding: 12px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
+    .analisis-card:hover { transform: translateY(-3px); }
+    .analisis-val { font-size: 1.4rem; font-weight: bold; color: #007bff; display: block; }
+
+    @media print {
+        @page { size: landscape; margin: 1cm; }
+        .no-print, .btn, footer, .header-app, .col-lg-3, .filter-section, .analisis-card { display: none !important; }
+        #printHeader { display: block !important; text-align: center; margin-bottom: 20px; }
+        .col-lg-9 { width: 100% !important; max-width: 100% !important; padding: 0 !important; }
+        .table-responsive { overflow: visible !important; height: auto !important; border: none !important; }
+        table { font-size: 9px; width: 100% !important; border: 1px solid #000 !important; border-collapse: collapse; }
+        th { background-color: #f2f2f2 !important; color: #000 !important; border: 1px solid #000 !important; }
+        td { border: 1px solid #000 !important; color: #000 !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="printHeader" style="display: none;">
+  <h2 style="color: #007bff; font-weight: bold; text-decoration: underline; text-align: center;">DAFTAR PASIEN REGISTRASI RAWAT INAP</h2>
+  <p style="text-align: center;">RSUD MERAH PUTIH - TAHUN 2026</p>
+  <hr style="border: 1px solid #000;">
+</div>
+
+<div id="loader" class="loading">
+    <div class="text-center">
+        <i class="fas fa-spinner fa-spin fa-3x mb-2"></i><br>
+        <span>MEMPROSES DATA...</span>
+    </div>
+</div>
+
+<div class="header-app d-flex align-items-center mb-4 no-print">
+  <div class="container-fluid d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <img src="https://i.ibb.co.com/nNQKQ6Vd/Whats-App-Image-2022-05-28-at-10-25-36-removebg.png" style="height: 45px;" class="mr-3">
+      <div>
+        <h5 class="mb-0 font-weight-bold" style="color:#007bff">REGISTRASI RAWAT INAP</h5>
+        <small class="text-muted">RSUD MERAH PUTIH KABUPATEN MAGELANG</small>
+      </div>
+    </div>
+    <button onclick="window.location.href='index.html'" class="btn btn-outline-primary btn-sm font-weight-bold"><i class="fas fa-home"></i> Dashboard</button>
+  </div>
+</div>
+
+<div class="container-fluid mt-3">
+  
+  <div class="row mb-3 no-print">
+    <div class="col-md-4"><div class="analisis-card text-center">TOTAL PASIEN<br><span class="analisis-val" id="statTotal">0</span></div></div>
+    <div class="col-md-4"><div class="analisis-card text-center" style="border-left-color: #28a745;">POLI TERBANYAK<br><span class="analisis-val text-success" id="statPoliPopuler">-</span></div></div>
+    <div class="col-md-4"><div class="analisis-card text-center" style="border-left-color: #17a2b8;">HARI INI<br><span class="analisis-val text-info" id="statHariIni">0</span></div></div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 no-print mb-4">
+      <div class="card p-3 border-top border-primary shadow-sm" style="border-radius: 15px;">
+        <h6 id="formTitle" class="font-weight-bold text-center mb-3" style="color:#007bff">Input Pasien Ranap</h6>
+        <form id="fRanap">
+          <input type="hidden" id="editRowId">
+          
+          <label class="small mb-0 font-weight-bold">Petugas Penginput</label>
+          <input type="text" id="petugas" class="form-control form-control-sm mb-2" placeholder="Nama Anda" required>
+
+          <label class="small mb-0 font-weight-bold">Tgl Periksa</label>
+          <input type="date" id="tanggal" class="form-control form-control-sm mb-2" required>
+          
+          <input type="text" id="nama" class="form-control form-control-sm mb-2" placeholder="Nama Pasien" required>
+          <input type="text" id="norm" class="form-control form-control-sm mb-2" placeholder="No RM" required>
+          
+          <label class="small mb-0 font-weight-bold">Pembayaran</label>
+          <select id="pembayaran" class="form-control form-control-sm mb-2">
+            <option value="BPJS">BPJS</option>
+            <option value="UMUM">UMUM</option>
+            <option value="ASURANSI">ASURANSI</option>
+            <option value="JASA RAHARJA">JASA RAHARJA</option>
+          </select>
+
+          <input type="text" id="diagnosis" class="form-control form-control-sm mb-2" placeholder="Diagnosis">
+          
+          <label class="small mb-0 font-weight-bold">Poli Asal</label>
+          <select id="poli" class="form-control form-control-sm mb-2" onchange="updateDPJP()">
+            <option value="">-- Pilih Poli --</option>
+            <option value="Dalam">Dalam</option><option value="Gigi">Gigi</option><option value="Mata">Mata</option>
+            <option value="THT">THT</option><option value="Umum">Umum</option><option value="Kulit dan Kelamin">Kulit dan Kelamin</option>
+            <option value="Paru">Paru</option><option value="Saraf">Saraf</option><option value="Jiwa">Jiwa</option>
+            <option value="Bedah">Bedah</option><option value="Bedah Anak">Bedah Anak</option><option value="Ortopedi">Ortopedi</option>
+            <option value="Obsgyn">Obsgyn</option><option value="Anak">Anak</option><option value="Jantung">Jantung</option><option value="Urologi">Urologi</option>
+          </select>
+
+          <label class="small mb-0 font-weight-bold">DPJP</label>
+          <select id="dpjp" class="form-control form-control-sm mb-2">
+            <option value="">-- Pilih DPJP --</option>
+          </select>
+
+          <textarea id="catatan" class="form-control form-control-sm mb-2" placeholder="Catatan..."></textarea>
+          <input type="number" id="noWa" class="form-control form-control-sm mb-3" placeholder="No WA (628...)">
+          
+          <button type="button" id="btnSimpan" class="btn btn-primary btn-block font-weight-bold" onclick="simpan()"><i class="fas fa-save"></i> SIMPAN & KIRIM NOTIF</button>
+          <button type="button" id="btnBatal" class="btn btn-secondary btn-block btn-sm mt-2" style="display:none;" onclick="resetForm()">BATAL</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-9 mb-4">
+      <div class="card p-3 shadow-sm" style="border-radius: 15px;">
+        <div class="no-print mb-3 row filter-section">
+          <div class="col-md-3">
+            <label class="small font-weight-bold">Cari Data:</label>
+            <input type="text" id="cari" class="form-control form-control-sm" placeholder="Nama/RM/DPJP..." onkeyup="filterData()">
+          </div>
+          <div class="col-md-2">
+            <label class="small font-weight-bold">Dari:</label>
+            <input type="date" id="tglDari" class="form-control form-control-sm" onchange="filterData()">
+          </div>
+          <div class="col-md-2">
+            <label class="small font-weight-bold">Sampai:</label>
+            <input type="date" id="tglSampai" class="form-control form-control-sm" onchange="filterData()">
+          </div>
+          <div class="col-md-5 d-flex align-items-end justify-content-end">
+            <button class="btn btn-success btn-sm mr-2 font-weight-bold" onclick="exportExcel()"><i class="fas fa-file-excel"></i> EXCEL</button>
+            <button class="btn btn-dark btn-sm font-weight-bold" onclick="window.print()"><i class="fas fa-print"></i> CETAK PDF</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-sm table-hover" id="tabelDataRanap">
+            <thead id="hTab"></thead>
+            <tbody id="bTab"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalKamera" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; text-align:center; padding-top:20px;">
+  <h5 class="text-white mb-3"><i class="fas fa-camera"></i> FOTO DOKUMEN TAMBAHAN</h5>
+  <video id="video" width="90%" style="max-width:450px; border:3px solid #007bff; border-radius:10px;" autoplay playsinline></video>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <div class="mt-4">
+    <button class="btn btn-light btn-lg rounded-circle p-4 shadow-lg" onclick="ambilFoto()">📸</button>
+    <div class="mt-3"><button class="btn btn-danger btn-sm" onclick="tutupKamera()">BATAL / KELUAR</button></div>
+  </div>
+</div>
+
+<footer class="no-print mt-5 pb-4 text-center">
+  <hr style="width: 50%; border-top: 1px solid #007bff; margin: 0 auto 15px auto;">
+  <p class="font-weight-bold mb-0" style="color: #007bff;">Developed by Daniel Ari Kristianto</p>
+  <small class="text-muted">RSUD Merah Putih &copy; 2026</small>
+</footer>
+
+<script>
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzllFxKUsIqI2ROy6zx1iVKpIYJb9ZZoKBnE78XrGxuLcie1hS_Q5dlizX98OsTFdTPgQ/exec"; 
+  let database = [];
+
+  const dokterData = {
+    "Dalam": ["dr. Galih Dwi Jayanto,Sp.PD", "dr. Antonius Priyohartono,Sp.PD", "dr. Imam Manggalya,Sp.PD", "dr. Dandy Firmansyah,Sp.pd", "dr. Rony Kendyartanto,Sp.PD"],
+    "Gigi": ["drg. Betagia S Wisesa,Sp.KG"],
+    "Mata": ["dr. Tiara Putri Utami,Sp.M"],
+    "THT": ["dr. Therry Tulus,Sp.THT-KL"],
+    "Umum": ["dr. Kadek Sinthia G", "dr. DU Lainnya"],
+    "Kulit dan Kelamin": ["dr. Jeffrey Giantoro,Sp.DVE"],
+    "Paru": ["dr. Wildan Ferdian, Sp.P"],
+    "Saraf": ["dr. Mutiah M,Sp.N", "dr. H.Soleh,Sp.N,FINA,ME"],
+    "Jiwa": ["dr. Masyi Ferdian, Sp.KJ"],
+    "Bedah": ["dr. Afriliandryf R, Sp.B", "dr. Wawan Suci,Sp.B", "dr. Pramudyo H,Sp.B"],
+    "Bedah Anak": ["dr. M Arikhan Oktobriyanto"],
+    "Ortopedi": ["dr. Ronna Nuqtho H,Sp.OT", "dr. Morteza Bahesdhi, Sp.OT"],
+    "Obsgyn": ["dr. Nungky Nugroho,Sp.OG", "dr. Danu Lestariyanto,Sp.OG", "dr. Ricky Bernadi S,Sp.OG"],
+    "Anak": ["dr. Resa Gratya, Sp.A,M.Kes", "dr. Arta Chistin Y, Sp.A", "dr. Juliani, M.Kes, Sp.A"],
+    "Jantung": ["dr. Anindita Suputri, Sp.JP,FIHA", "dr. Jantung Baru"],
+    "Urologi": ["dr. Dadang Arif P,Sp.U", "dr. Faisal Farhan Akmal, Sp.U"]
+  };
+
+  window.onload = muat;
+
+  function updateDPJP() {
+    const poli = document.getElementById('poli').value;
+    const dpjpSelect = document.getElementById('dpjp');
+    dpjpSelect.innerHTML = '<option value="">-- Pilih DPJP --</option>';
+    if(dokterData[poli]) {
+      dokterData[poli].forEach(d => {
+        let opt = document.createElement('option'); opt.value = d; opt.text = d; dpjpSelect.add(opt);
+      });
+    }
+  }
+
+  function setLoad(v) { document.getElementById('loader').style.display = v ? 'flex' : 'none'; }
+
+  function muat() {
+    setLoad(true);
+    fetch(scriptURL).then(r => r.json()).then(data => {
+      database = data;
+      document.getElementById('hTab').innerHTML = `<tr>${data[0].map(i => `<th>${i}</th>`).join('')}<th class="no-print">AKSI</th></tr>`;
+      renderTable(data);
+      updateAnalisis();
+      setLoad(false);
+    });
+  }
+
+  function renderTable(data) {
+    let b = document.getElementById('bTab');
+    b.innerHTML = "";
+    if(data.length <= 1) return;
+    for(let i=1; i<data.length; i++){
+      let d = data[i];
+      let rowHtml = d.map((c, idx) => `<td>${idx === 0 ? i : c}</td>`).join('');
+      b.innerHTML += `<tr>${rowHtml}<td class="no-print text-center">
+        <i class="fab fa-whatsapp text-success btn-aksi" onclick="kirimWA(${i})" title="WhatsApp"></i>
+        <i class="fas fa-camera text-info btn-aksi" onclick="bukaKamera(${i})" title="Kamera"></i>
+        <i class="fas fa-edit text-primary btn-aksi" onclick="editBaris(${i})" title="Edit"></i>
+        <i class="fas fa-trash text-danger btn-aksi" onclick="hapus(${i})" title="Hapus"></i>
+      </td></tr>`;
+    }
+  }
+
+  function updateAnalisis() {
+    let total = 0, hariIni = 0;
+    let poliCount = {};
+    let tglSekarang = new Date().toISOString().split('T')[0];
+    for (let i = 1; i < database.length; i++) {
+        total++;
+        if(database[i][1] === tglSekarang) hariIni++;
+        let p = database[i][6];
+        poliCount[p] = (poliCount[p] || 0) + 1;
+    }
+    let maxPoli = Object.keys(poliCount).reduce((a, b) => poliCount[a] > poliCount[b] ? a : b, "-");
+    document.getElementById('statTotal').innerText = total;
+    document.getElementById('statHariIni').innerText = hariIni;
+    document.getElementById('statPoliPopuler').innerText = maxPoli;
+  }
+
+  function filterData() {
+    let t1 = document.getElementById('tglDari').value;
+    let t2 = document.getElementById('tglSampai').value;
+    let k = document.getElementById('cari').value.toUpperCase();
+    let rows = document.getElementById('bTab').getElementsByTagName('tr');
+    let urut = 1;
+    for (let i = 0; i < rows.length; i++) {
+      let tgl = database[i+1][1];
+      let teks = rows[i].innerText.toUpperCase();
+      let mDate = (!t1 || tgl >= t1) && (!t2 || tgl <= t2);
+      let mCari = teks.indexOf(k) > -1;
+      if(mDate && mCari) {
+        rows[i].style.display = "";
+        rows[i].cells[0].innerText = urut++;
+      } else { rows[i].style.display = "none"; }
+    }
+  }
+
+  function simpan() {
+    let rowId = document.getElementById('editRowId').value;
+    let payload = {
+      action: rowId === "" ? "TAMBAH" : "UPDATE_FULL", row: rowId,
+      petugas: document.getElementById('petugas').value,
+      tanggal: document.getElementById('tanggal').value,
+      nama: document.getElementById('nama').value,
+      norm: document.getElementById('norm').value,
+      pembayaran: document.getElementById('pembayaran').value,
+      diagnosis: document.getElementById('diagnosis').value,
+      poli: document.getElementById('poli').value,
+      dpjp: document.getElementById('dpjp').value,
+      catatan: document.getElementById('catatan').value,
+      noWa: document.getElementById('noWa').value
+    };
+    if(!payload.nama || !payload.tanggal) return alert("Nama dan Tanggal wajib diisi!");
+    setLoad(true);
+    fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) })
+    .then(r => r.text())
+    .then(res => {
+        alert("Data Berhasil Disimpan & Notifikasi Email Terkirim!");
+        resetForm(); muat(); 
+    });
+  }
+
+  function editBaris(r) {
+    let d = database[r];
+    document.getElementById('editRowId').value = r;
+    document.getElementById('petugas').value = d[10] || "";
+    document.getElementById('tanggal').value = d[1];
+    document.getElementById('nama').value = d[2];
+    document.getElementById('norm').value = d[3];
+    document.getElementById('pembayaran').value = d[4];
+    document.getElementById('diagnosis').value = d[5];
+    document.getElementById('poli').value = d[6];
+    updateDPJP();
+    document.getElementById('dpjp').value = d[7];
+    document.getElementById('catatan').value = d[8];
+    document.getElementById('noWa').value = d[9];
+    document.getElementById('formTitle').innerText = "Mode Edit Data";
+    document.getElementById('btnSimpan').innerText = "UPDATE DATA";
+    document.getElementById('btnBatal').style.display = "block";
+    window.scrollTo(0,0);
+  }
+
+  function exportExcel() {
+    let table = document.getElementById("tabelDataRanap");
+    // Hapus kolom aksi sementara untuk excel
+    let wb = XLSX.utils.table_to_book(table, {sheet: "DataRanap"});
+    XLSX.writeFile(wb, "Data_Ranap_RSUD_MerahPutih_" + new Date().toISOString().split('T')[0] + ".xlsx");
+  }
+
+  function resetForm() {
+    document.getElementById('fRanap').reset();
+    document.getElementById('editRowId').value = "";
+    document.getElementById('formTitle').innerText = "Input Pasien Ranap";
+    document.getElementById('btnSimpan').innerText = "SIMPAN DATA";
+    document.getElementById('btnBatal').style.display = "none";
+  }
+
+  function hapus(r) {
+    if(confirm("Hapus data " + database[r][2] + "?")){
+      setLoad(true);
+      fetch(scriptURL, { method: 'POST', body: JSON.stringify({action:"HAPUS", row:r}) }).then(() => muat());
+    }
+  }
+
+  function kirimWA(idx) {
+    let d = database[idx];
+    let no = d[9];
+    if(!no) return alert("Nomor WA kosong!");
+    if(no.startsWith("0")) no = "62" + no.substring(1);
+    let msg = `Halo Bapak/Ibu *${d[2]}*, pendaftaran Rawat Inap Anda dari *Poli ${d[6]}* telah berhasil dikonfirmasi. Mohon tunggu instruksi selanjutnya dari petugas ruangan. Terimakasih.`;
+    window.open(`https://api.whatsapp.com/send?phone=${no}&text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  // Fungsi kamera tetap seperti semula
+  function bukaKamera(idx) {
+    let d = database[idx];
+    pasienAktif = { nama: d[2], norm: d[3], poli: d[6], dpjp: d[7], diagnosis: d[5], petugas: d[10] };
+    document.getElementById('modalKamera').style.display = 'block';
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+    .then(s => document.getElementById('video').srcObject = s);
+  }
+
+  function ambilFoto() {
+    const v = document.getElementById('video'), c = document.getElementById('canvas');
+    c.width = v.videoWidth; c.height = v.videoHeight;
+    c.getContext('2d').drawImage(v, 0, 0);
+    const b64 = c.toDataURL('image/jpeg', 0.7).split(',')[1];
+    setLoad(true);
+    fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: "UPLOAD_FOTO", imageBlob: b64, ...pasienAktif }) })
+    .then(r => r.text()).then(res => { alert(res); tutupKamera(); muat(); });
+  }
+
+  function tutupKamera() {
+    const v = document.getElementById('video');
+    if(v.srcObject) v.srcObject.getTracks().forEach(t => t.stop());
+    document.getElementById('modalKamera').style.display = 'none';
+  }
+</script>
+</body>
+</html>
